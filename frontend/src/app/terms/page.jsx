@@ -1,19 +1,24 @@
+import { FaFileContract } from "react-icons/fa";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export default function TermsPage() {
   return (
-    <>
+    <section className="min-h-screen bg-black text-white px-6 pt-40 pb-32">
       <Navbar />
-      <main className="min-h-screen bg-white pt-40 px-6">
-        <div className="max-w-5xl mx-auto">
-          <h1 className="text-4xl font-bold mb-6">Terms of Service</h1>
-          <p className="text-gray-600">
-            Terms and conditions governing the use of UrStyleKE.
-          </p>
-        </div>
-      </main>
+      <div className="max-w-4xl mx-auto">
+        <FaFileContract className="mb-6 w-8 h-8 text-gray-400" />
+
+        <h1 className="text-3xl font-bold mb-6">
+          Terms & Conditions
+        </h1>
+
+        <p className="text-gray-400 leading-relaxed">
+          By using UrStyleKE, you agree to our terms of service and usage
+          guidelines designed to protect both our customers and brand.
+        </p>
+      </div>
       <Footer />
-    </>
+    </section>
   );
 }
