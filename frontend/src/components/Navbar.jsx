@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { FaShoppingBag } from "react-icons/fa";
 
 export default function Navbar() {
   return (
@@ -9,6 +10,7 @@ export default function Navbar() {
           href="/"
           className="text-sm font-semibold tracking-[0.25em] uppercase"
         >
+          <FaShoppingBag className="inline-block w-6 h-6 mr-2 mb-1" />
           UrStyleKE
         </Link>
 
