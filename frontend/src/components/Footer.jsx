@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FaInstagram, FaXTwitter } from "react-icons/fa6";
 import { HiOutlineMail } from "react-icons/hi";
 
@@ -22,14 +23,20 @@ export default function Footer() {
             Explore
           </h4>
           <ul className="space-y-4 text-sm">
-            <li className="hover:text-white transition cursor-pointer">
-              Men
+            <li>
+              <Link href="/men" className="hover:text-white transition">
+                Men
+              </Link>
             </li>
-            <li className="hover:text-white transition cursor-pointer">
-              Women
+            <li>
+              <Link href="/women" className="hover:text-white transition">
+                Women
+              </Link>
             </li>
-            <li className="hover:text-white transition cursor-pointer">
-              Collections
+            <li>
+              <Link href="/collection" className="hover:text-white transition">
+                Collections
+              </Link>
             </li>
           </ul>
         </div>
@@ -40,9 +47,15 @@ export default function Footer() {
             Connect
           </h4>
           <div className="flex items-center gap-6">
-            <FaInstagram className="w-5 h-5 hover:text-white transition cursor-pointer" />
-            <FaXTwitter className="w-5 h-5 hover:text-white transition cursor-pointer" />
-            <HiOutlineMail className="w-6 h-6 hover:text-white transition cursor-pointer" />
+            <a href="#" aria-label="Instagram">
+              <FaInstagram className="w-5 h-5 hover:text-white transition" />
+            </a>
+            <a href="#" aria-label="Twitter/X">
+              <FaXTwitter className="w-5 h-5 hover:text-white transition" />
+            </a>
+            <a href="mailto:info@urstyleke.com" aria-label="Email">
+              <HiOutlineMail className="w-6 h-6 hover:text-white transition" />
+            </a>
           </div>
         </div>
       </div>
@@ -54,12 +67,12 @@ export default function Footer() {
         </span>
 
         <div className="flex gap-6 mt-4 md:mt-0">
-          <span className="hover:text-white transition cursor-pointer">
+          <Link href="/privacy" className="hover:text-white transition">
             Privacy
-          </span>
-          <span className="hover:text-white transition cursor-pointer">
+          </Link>
+          <Link href="/terms" className="hover:text-white transition">
             Terms
-          </span>
+          </Link>
         </div>
       </div>
     </footer>
