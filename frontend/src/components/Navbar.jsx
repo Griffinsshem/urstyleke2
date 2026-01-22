@@ -8,29 +8,38 @@ export default function Navbar() {
         {/* Brand */}
         <Link
           href="/"
-          className="text-sm font-semibold tracking-[0.25em] uppercase"
+          className="text-sm font-semibold tracking-[0.25em] uppercase flex items-center"
         >
-          <FaShoppingBag className="inline-block w-6 h-6 mr-2 mb-1" />
+          <FaShoppingBag className="w-6 h-6 mr-2" />
           UrStyleKE
         </Link>
 
         {/* Navigation */}
         <ul className="hidden md:flex items-center gap-10 text-xs tracking-[0.3em] uppercase text-gray-300">
-          <li className="hover:text-white transition cursor-pointer">
-            Men
+          <li>
+            <Link href="/men" className="hover:text-white transition">
+              Men
+            </Link>
           </li>
-          <li className="hover:text-white transition cursor-pointer">
-            Women
+          <li>
+            <Link href="/women" className="hover:text-white transition">
+              Women
+            </Link>
           </li>
-          <li className="hover:text-white transition cursor-pointer">
-            Collection
+          <li>
+            <Link href="/collection" className="hover:text-white transition">
+              Collection
+            </Link>
           </li>
         </ul>
 
         {/* Action */}
-        <button className="text-xs tracking-[0.25em] uppercase border border-white/40 px-6 py-3 rounded-full hover:bg-white hover:text-black transition">
+        <Link
+          href="/signin"
+          className="text-xs tracking-[0.25em] uppercase border border-white/40 px-6 py-3 rounded-full hover:bg-white hover:text-black transition"
+        >
           Sign In
-        </button>
+        </Link>
       </nav>
     </header>
   );
