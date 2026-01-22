@@ -1,6 +1,6 @@
 export default function Hero() {
   return (
-    <section className="relative min-h-screen bg-black text-white flex items-center justify-center px-6 overflow-hidden">
+    <section className="relative min-h-screen bg-black text-white flex items-center justify-center px-6 pt-32 overflow-hidden">
       {/* Background gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-black via-neutral-900 to-black opacity-90" />
 
