@@ -2,19 +2,31 @@ import Link from "next/link";
 
 export default function Navbar() {
   return (
-    <header className="fixed top-0 w-full z-50 bg-black/80 backdrop-blur border-b border-white/10">
-      <nav className="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between text-white">
-        <Link href="/" className="text-xl font-bold tracking-wide">
+    <header className="fixed top-0 left-0 w-full z-50">
+      <nav className="mx-auto max-w-7xl px-6 py-6 flex items-center justify-between text-white">
+        {/* Brand */}
+        <Link
+          href="/"
+          className="text-sm font-semibold tracking-[0.25em] uppercase"
+        >
           UrStyleKE
         </Link>
 
-        <ul className="hidden md:flex gap-8 text-sm uppercase tracking-wider">
-          <li className="hover:text-gray-300 transition">Men</li>
-          <li className="hover:text-gray-300 transition">Women</li>
-          <li className="hover:text-gray-300 transition">Collections</li>
+        {/* Navigation */}
+        <ul className="hidden md:flex items-center gap-10 text-xs tracking-[0.3em] uppercase text-gray-300">
+          <li className="hover:text-white transition cursor-pointer">
+            Men
+          </li>
+          <li className="hover:text-white transition cursor-pointer">
+            Women
+          </li>
+          <li className="hover:text-white transition cursor-pointer">
+            Collection
+          </li>
         </ul>
 
-        <button className="px-5 py-2 border border-white rounded-full text-sm hover:bg-white hover:text-black transition">
+        {/* Action */}
+        <button className="text-xs tracking-[0.25em] uppercase border border-white/40 px-6 py-3 rounded-full hover:bg-white hover:text-black transition">
           Sign In
         </button>
       </nav>
