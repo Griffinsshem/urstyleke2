@@ -13,12 +13,14 @@ export default function ProductCard({
 }) {
   const router = useRouter();
 
+  const safePrice = Number(price) || 0; // ✅ DEFENSIVE FIX
+
   const handleAdd = () => {
     addToCart({
       id,
       title,
       category,
-      price,
+      price: safePrice,
     });
 
     router.push("/checkout");
@@ -33,12 +35,12 @@ export default function ProductCard({
         </span>
       </div>
 
-      <h3 className="text-lg font-semibold group-hover:text-white transition">
+      <h3 className="text-lg font-semibold">
         {title}
       </h3>
 
       <p className="text-sm text-gray-400 mt-2 mb-6">
-        KES {price.toLocaleString()}
+        KES {safePrice.toLocaleString()}
       </p>
 
       <button
