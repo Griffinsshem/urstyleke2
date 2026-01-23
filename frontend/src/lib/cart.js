@@ -1,6 +1,12 @@
-export const addToCart = (product) => {
-  const cart = JSON.parse(localStorage.getItem("cart")) || [];
+// src/lib/cart.js
 
+export const getCart = () => {
+  if (typeof window === "undefined") return [];
+  return JSON.parse(localStorage.getItem("cart")) || [];
+};
+
+export const addToCart = (product) => {
+  const cart = getCart();
   const existing = cart.find((item) => item.id === product.id);
 
   if (existing) {
@@ -12,6 +18,6 @@ export const addToCart = (product) => {
   localStorage.setItem("cart", JSON.stringify(cart));
 };
 
-export const getCart = () => {
-  return JSON.parse(localStorage.getItem("cart")) || [];
+export const getCartCount = () => {
+  return getCart().reduce((total, item) => total + item.quantity, 0);
 };
