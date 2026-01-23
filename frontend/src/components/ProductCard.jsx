@@ -1,3 +1,5 @@
+"use client";
+
 import { FaShoppingBag } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
 import { addToCart } from "@/lib/cart";
