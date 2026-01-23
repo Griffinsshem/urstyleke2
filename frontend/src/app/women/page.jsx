@@ -3,14 +3,17 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 const products = Array.from({ length: 9 }, (_, i) => ({
-  id: `women-${i}`,
+  id: `women-premium-${i + 1}`,
   title: "Premium Womenswear",
+  category: "Women",
+  price: 5200,
 }));
 
 export default function WomenPage() {
   return (
     <section className="min-h-screen bg-black text-white px-6 pt-40 pb-32">
       <Navbar />
+
       <div className="max-w-7xl mx-auto mb-20 text-center">
         <span className="text-xs tracking-[0.35em] uppercase text-gray-400">
           Women
