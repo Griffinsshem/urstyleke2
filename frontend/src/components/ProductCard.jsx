@@ -1,3 +1,4 @@
+import Link from "next/link";
 import { FaShoppingBag } from "react-icons/fa";
 import { FiArrowUpRight } from "react-icons/fi";
 
@@ -25,10 +26,17 @@ export default function ProductCard({ title, category }) {
           Crafted with precision and refined modern luxury.
         </p>
 
-        <button className="w-full flex items-center justify-center gap-2 px-6 py-3 text-xs tracking-[0.25em] uppercase rounded-full border border-white/30 hover:bg-white hover:text-black transition">
+        {/* Book → Checkout */}
+        <Link
+          href={{
+            pathname: "/checkout",
+            query: { title, category },
+          }}
+          className="w-full flex items-center justify-center gap-2 px-6 py-3 text-xs tracking-[0.25em] uppercase rounded-full border border-white/30 hover:bg-white hover:text-black transition"
+        >
           Book
           <FiArrowUpRight className="w-4 h-4" />
-        </button>
+        </Link>
       </div>
     </div>
   );
