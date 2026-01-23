@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 import ProductGrid from "@/components/ProductGrid";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const PRODUCTS_PER_PAGE = 9;
 
@@ -27,6 +29,7 @@ export default function CollectionPage() {
 
   return (
     <section className="min-h-screen bg-black text-white px-6 pt-40 pb-32">
+      <Navbar />
       <div className="max-w-7xl mx-auto mb-20 text-center">
         <span className="text-xs tracking-[0.35em] uppercase text-gray-400">
           Collection
@@ -65,6 +68,7 @@ export default function CollectionPage() {
           Next
         </button>
       </div>
+      <Footer />
     </section>
   );
 }
