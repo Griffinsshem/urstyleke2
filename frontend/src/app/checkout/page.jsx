@@ -47,7 +47,6 @@ export default function CheckoutPage() {
               key={item.id}
               className="flex items-center justify-between bg-neutral-900 border border-white/10 rounded-xl p-6"
             >
-              {/* Product Info */}
               <div className="flex items-center gap-4">
                 <FaShoppingBag className="text-gray-400 w-5 h-5" />
                 <div>
@@ -61,7 +60,6 @@ export default function CheckoutPage() {
                 </div>
               </div>
 
-              {/* Price + Remove */}
               <div className="flex items-center gap-6">
                 <span className="font-medium">
                   KES {(item.price * item.quantity).toLocaleString()}
@@ -70,7 +68,6 @@ export default function CheckoutPage() {
                 <button
                   onClick={() => removeFromCart(item.id)}
                   className="text-gray-400 hover:text-red-500 transition"
-                  title="Remove item"
                 >
                   <FaTrash />
                 </button>
@@ -78,13 +75,11 @@ export default function CheckoutPage() {
             </div>
           ))}
 
-          {/* Total */}
           <div className="flex justify-between items-center border-t border-white/10 pt-6 text-lg font-semibold">
             <span>Total</span>
             <span>KES {total.toLocaleString()}</span>
           </div>
 
-          {/* CTA */}
           <button className="w-full mt-6 py-4 rounded-full bg-white text-black font-semibold hover:scale-[1.02] transition">
             Proceed to Payment
           </button>
