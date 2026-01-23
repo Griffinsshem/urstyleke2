@@ -7,6 +7,8 @@ import {
   removeFromCart,
 } from "@/lib/cart";
 import { FaTrash, FaCreditCard } from "react-icons/fa";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 export default function CheckoutPage() {
   const [cart, setCart] = useState([]);
@@ -33,6 +35,7 @@ export default function CheckoutPage() {
 
   return (
     <section className="min-h-screen bg-black text-white px-6 pt-40 pb-32">
+      <Navbar />
       <div className="max-w-5xl mx-auto">
         <h1 className="text-4xl font-bold mb-12 text-center">
           Checkout
@@ -110,6 +113,7 @@ export default function CheckoutPage() {
           </>
         )}
       </div>
+      <Footer />
     </section>
   );
 }
