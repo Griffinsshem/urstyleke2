@@ -9,14 +9,16 @@ const PRODUCTS_PER_PAGE = 9;
 
 const products = [
   ...Array.from({ length: 12 }, (_, i) => ({
-    id: `men-${i}`,
-    title: "Premium Menswear",
+    id: `men-premium-${i + 1}`,
+    title: `Premium Menswear ${i + 1}`,
     category: "Men",
+    price: 4500,
   })),
   ...Array.from({ length: 12 }, (_, i) => ({
-    id: `women-${i}`,
-    title: "Premium Womenswear",
+    id: `women-premium-${i + 1}`,
+    title: `Premium Womenswear ${i + 1}`,
     category: "Women",
+    price: 5200,
   })),
 ];
 
@@ -30,6 +32,8 @@ export default function CollectionPage() {
   return (
     <section className="min-h-screen bg-black text-white px-6 pt-40 pb-32">
       <Navbar />
+
+      {/* Header */}
       <div className="max-w-7xl mx-auto mb-20 text-center">
         <span className="text-xs tracking-[0.35em] uppercase text-gray-400">
           Collection
@@ -44,14 +48,17 @@ export default function CollectionPage() {
         </p>
       </div>
 
+      {/* Products */}
       <ProductGrid products={currentProducts} showCategory />
 
       {/* Pagination */}
-      <div className="flex justify-center items-center gap-6 mt-20">
+      <div className="flex justify-center items-center gap-8 mt-24">
         <button
           disabled={page === 1}
           onClick={() => setPage((p) => p - 1)}
-          className="px-6 py-3 text-xs tracking-[0.25em] uppercase rounded-full border border-white/20 disabled:opacity-40 hover:bg-white hover:text-black transition"
+          className="px-8 py-3 text-xs tracking-[0.25em] uppercase rounded-full
+          border border-white/20 disabled:opacity-40
+          hover:bg-white hover:text-black transition"
         >
           Prev
         </button>
@@ -63,11 +70,14 @@ export default function CollectionPage() {
         <button
           disabled={page === totalPages}
           onClick={() => setPage((p) => p + 1)}
-          className="px-6 py-3 text-xs tracking-[0.25em] uppercase rounded-full border border-white/20 disabled:opacity-40 hover:bg-white hover:text-black transition"
+          className="px-8 py-3 text-xs tracking-[0.25em] uppercase rounded-full
+          border border-white/20 disabled:opacity-40
+          hover:bg-white hover:text-black transition"
         >
           Next
         </button>
       </div>
+
       <Footer />
     </section>
   );
