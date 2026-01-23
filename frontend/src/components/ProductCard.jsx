@@ -5,12 +5,23 @@ import { FaShoppingBag } from "react-icons/fa";
 import { FiPlus } from "react-icons/fi";
 import { addToCart } from "@/lib/cart";
 
-export default function ProductCard({ id, title, category, price = 0 }) {
+export default function ProductCard({
+  id,
+  title,
+  category,
+  price,
+}) {
   const router = useRouter();
 
   const handleAdd = () => {
-    addToCart({ id, title, category, price });
-    router.push("/checkout"); // 🔥 THIS WAS MISSING
+    addToCart({
+      id,
+      title,
+      category,
+      price,
+    });
+
+    router.push("/checkout");
   };
 
   return (
@@ -27,14 +38,13 @@ export default function ProductCard({ id, title, category, price = 0 }) {
       </h3>
 
       <p className="text-sm text-gray-400 mt-2 mb-6">
-        KES {Number(price).toLocaleString()}
+        KES {price.toLocaleString()}
       </p>
 
       <button
         onClick={handleAdd}
         className="w-full flex items-center justify-center gap-2 px-4 py-3 rounded-full
-        border border-white/20
-        hover:bg-white hover:text-black
+        border border-white/20 hover:bg-white hover:text-black
         transition-all duration-300"
       >
         <FiPlus />
