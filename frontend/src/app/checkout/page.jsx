@@ -3,8 +3,8 @@
 import { useEffect, useState } from "react";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { getCart } from "@/lib/cart";
-import { FaShoppingBag } from "react-icons/fa";
+import { getCart, removeFromCart } from "@/lib/cart";
+import { FaShoppingBag, FaTrash } from "react-icons/fa";
 
 export default function CheckoutPage() {
   const [cart, setCart] = useState([]);
@@ -12,16 +12,14 @@ export default function CheckoutPage() {
   useEffect(() => {
     setCart(getCart());
 
-    const updateCart = () => {
-      setCart(getCart());
-    };
+    const syncCart = () => setCart(getCart());
 
-    window.addEventListener("cart-updated", updateCart);
-    window.addEventListener("storage", updateCart);
+    window.addEventListener("cart-updated", syncCart);
+    window.addEventListener("storage", syncCart);
 
     return () => {
-      window.removeEventListener("cart-updated", updateCart);
-      window.removeEventListener("storage", updateCart);
+      window.removeEventListener("cart-updated", syncCart);
+      window.removeEventListener("storage", syncCart);
     };
   }, []);
 
@@ -43,26 +41,40 @@ export default function CheckoutPage() {
           Your cart is empty.
         </p>
       ) : (
-        <div className="max-w-4xl mx-auto space-y-8">
-          {/* Cart Items */}
+        <div className="max-w-4xl mx-auto space-y-6">
           {cart.map((item) => (
             <div
               key={item.id}
               className="flex items-center justify-between bg-neutral-900 border border-white/10 rounded-xl p-6"
             >
+              {/* Product Info */}
               <div className="flex items-center gap-4">
                 <FaShoppingBag className="text-gray-400 w-5 h-5" />
                 <div>
                   <h3 className="font-semibold">{item.title}</h3>
                   <p className="text-sm text-gray-400">
-                    Qty: {item.quantity}
+                    Quantity: {item.quantity}
+                  </p>
+                  <p className="text-sm text-gray-500">
+                    KES {item.price.toLocaleString()} each
                   </p>
                 </div>
               </div>
 
-              <span className="font-medium">
-                KES {(item.price * item.quantity).toLocaleString()}
-              </span>
+              {/* Price + Remove */}
+              <div className="flex items-center gap-6">
+                <span className="font-medium">
+                  KES {(item.price * item.quantity).toLocaleString()}
+                </span>
+
+                <button
+                  onClick={() => removeFromCart(item.id)}
+                  className="text-gray-400 hover:text-red-500 transition"
+                  title="Remove item"
+                >
+                  <FaTrash />
+                </button>
+              </div>
             </div>
           ))}
 
