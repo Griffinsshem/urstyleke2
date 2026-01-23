@@ -1,4 +1,6 @@
 import ProductGrid from "@/components/ProductGrid";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 const products = Array.from({ length: 9 }, (_, i) => ({
   id: `men-${i}`,
@@ -8,6 +10,7 @@ const products = Array.from({ length: 9 }, (_, i) => ({
 export default function MenPage() {
   return (
     <section className="min-h-screen bg-black text-white px-6 pt-40 pb-32">
+      <Navbar />
       <div className="max-w-7xl mx-auto mb-20 text-center">
         <span className="text-xs tracking-[0.35em] uppercase text-gray-400">
           Men
@@ -23,6 +26,7 @@ export default function MenPage() {
       </div>
 
       <ProductGrid products={products} />
+      <Footer />
     </section>
   );
 }
