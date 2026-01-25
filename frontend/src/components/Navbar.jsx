@@ -1,10 +1,22 @@
 "use client";
 
 import Link from "next/link";
+import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
+import { isAuthenticated, logoutUser } from "@/lib/auth";
 
 export default function Navbar() {
   const pathname = usePathname();
+  const [loggedIn, setLoggedIn] = useState(false);
+
+  useEffect(() => {
+    setLoggedIn(isAuthenticated());
+
+    const syncAuth = () => setLoggedIn(isAuthenticated());
+    window.addEventListener("auth-changed", syncAuth);
+
+    return () => window.removeEventListener("auth-changed", syncAuth);
+  }, []);
 
   return (
     <nav className="fixed top-0 left-0 w-full z-50 bg-black/80 backdrop-blur border-b border-white/10">
@@ -30,27 +42,37 @@ export default function Navbar() {
           </Link>
         </div>
 
-        {/* Auth Actions */}
+        {/* Auth */}
         <div className="flex items-center gap-4">
-          {/* Login */}
-          {pathname !== "/login" && (
-            <Link
-              href="/login"
-              className="text-sm text-gray-300 hover:text-white transition"
-            >
-              Sign In
-            </Link>
-          )}
+          {!loggedIn ? (
+            <>
+              {pathname !== "/login" && (
+                <Link
+                  href="/login"
+                  className="text-sm text-gray-300 hover:text-white transition"
+                >
+                  Sign In
+                </Link>
+              )}
 
-          {/* Register */}
-          {pathname !== "/register" && (
-            <Link
-              href="/register"
-              className="px-5 py-2 rounded-full border border-white/20 text-sm
-              hover:bg-white hover:text-black transition"
+              {pathname !== "/register" && (
+                <Link
+                  href="/register"
+                  className="px-5 py-2 rounded-full border border-white/20 text-sm
+                  hover:bg-white hover:text-black transition"
+                >
+                  Register
+                </Link>
+              )}
+            </>
+          ) : (
+            <button
+              onClick={logoutUser}
+              className="px-5 py-2 rounded-full border border-red-500/30 text-sm
+              text-red-400 hover:bg-red-500 hover:text-white transition"
             >
-              Register
-            </Link>
+              Sign Out
+            </button>
           )}
         </div>
       </div>
