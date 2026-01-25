@@ -1,62 +1,92 @@
 "use client";
 
+import { useState } from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 import Link from "next/link";
-import { FiUser, FiMail, FiLock } from "react-icons/fi";
+import { FaUserPlus } from "react-icons/fa";
 
 export default function RegisterPage() {
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const handleRegister = (e) => {
+    e.preventDefault();
+
+    // TEMP: frontend-only (backend comes later)
+    alert("Account created successfully. Please sign in.");
+    window.location.href = "/signin";
+  };
+
   return (
-    <section className="min-h-screen bg-black text-white flex items-center justify-center px-6">
-      <div className="w-full max-w-md border border-white/10 rounded-2xl p-10">
-        <h1 className="text-3xl font-bold text-center mb-2">
-          Create Account
-        </h1>
-        <p className="text-gray-400 text-center mb-8 text-sm">
-          Register before signing in
-        </p>
+    <section className="min-h-screen bg-black text-white pt-32 px-6">
+      <Navbar />
 
-        <form className="space-y-5">
-          <div className="flex items-center gap-3 border border-white/10 rounded-lg px-4 py-3">
-            <FiUser className="text-gray-400" />
-            <input
-              type="text"
-              placeholder="Full Name"
-              className="bg-transparent outline-none w-full text-sm"
-            />
-          </div>
+      <div className="max-w-md mx-auto bg-neutral-900 border border-white/10 rounded-2xl p-10">
+        {/* Header */}
+        <div className="text-center mb-10">
+          <FaUserPlus className="mx-auto mb-4 text-gray-400 w-8 h-8" />
+          <h1 className="text-3xl font-bold mb-2">Create Account</h1>
+          <p className="text-gray-400 text-sm">
+            Register to access premium fashion collections
+          </p>
+        </div>
 
-          <div className="flex items-center gap-3 border border-white/10 rounded-lg px-4 py-3">
-            <FiMail className="text-gray-400" />
-            <input
-              type="email"
-              placeholder="Email Address"
-              className="bg-transparent outline-none w-full text-sm"
-            />
-          </div>
+        {/* Form */}
+        <form onSubmit={handleRegister} className="space-y-6">
+          <input
+            type="text"
+            placeholder="Full Name"
+            required
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            className="w-full bg-black border border-white/20 rounded-lg px-4 py-3
+            text-sm focus:outline-none focus:border-white transition"
+          />
 
-          <div className="flex items-center gap-3 border border-white/10 rounded-lg px-4 py-3">
-            <FiLock className="text-gray-400" />
-            <input
-              type="password"
-              placeholder="Password"
-              className="bg-transparent outline-none w-full text-sm"
-            />
-          </div>
+          <input
+            type="email"
+            placeholder="Email Address"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full bg-black border border-white/20 rounded-lg px-4 py-3
+            text-sm focus:outline-none focus:border-white transition"
+          />
+
+          <input
+            type="password"
+            placeholder="Password"
+            required
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="w-full bg-black border border-white/20 rounded-lg px-4 py-3
+            text-sm focus:outline-none focus:border-white transition"
+          />
 
           <button
             type="submit"
-            className="w-full mt-4 py-3 rounded-full bg-white text-black text-sm font-semibold hover:opacity-90 transition"
+            className="w-full py-3 rounded-full bg-white text-black
+            font-semibold hover:scale-[1.02] transition"
           >
             Register
           </button>
         </form>
 
+        {/* Footer */}
         <p className="text-center text-sm text-gray-400 mt-8">
-          Already registered?{" "}
-          <Link href="/login" className="text-white hover:underline">
-            Sign in
+          Already have an account?{" "}
+          <Link
+            href="/signin"
+            className="text-white hover:underline transition"
+          >
+            Sign In
           </Link>
         </p>
       </div>
+
+      <Footer />
     </section>
   );
 }
