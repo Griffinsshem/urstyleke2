@@ -1,35 +1,53 @@
-import { FaUserLock } from "react-icons/fa";
+"use client";
+
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
+import { signIn } from "@/lib/auth";
 
 export default function SignInPage() {
-  return (
-    <section className="min-h-screen bg-black text-white px-6 pt-40 pb-32 flex items-center justify-center">
-      <Navbar />
-      <div className="w-full max-w-md bg-neutral-900/60 backdrop-blur-md rounded-2xl p-10 border border-white/10">
-        <FaUserLock className="mx-auto mb-6 w-8 h-8 text-gray-400" />
+  const [email, setEmail] = useState("");
+  const router = useRouter();
 
-        <h1 className="text-3xl font-bold text-center mb-8">
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    signIn({ email });
+    router.push("/");
+  };
+
+  return (
+    <section className="min-h-screen bg-black text-white pt-32 px-6">
+      <Navbar />
+
+      <div className="max-w-md mx-auto bg-neutral-900 border border-white/10 rounded-2xl p-10 mt-20">
+        <h1 className="text-3xl font-bold mb-8 text-center">
           Sign In
         </h1>
 
-        <form className="space-y-6">
+        <form onSubmit={handleSubmit} className="space-y-6">
           <input
             type="email"
-            placeholder="Email"
-            className="w-full bg-black/60 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none"
+            placeholder="Email address"
+            required
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            className="w-full bg-black border border-white/20 rounded-full px-6 py-4
+            text-sm placeholder-gray-500 focus:outline-none focus:border-white"
           />
 
-          <input
-            type="password"
-            placeholder="Password"
-            className="w-full bg-black/60 border border-white/10 rounded-lg px-4 py-3 text-white placeholder-gray-500 focus:outline-none"
-          />
-
-          <button className="w-full py-3 bg-white text-black font-semibold rounded-full hover:scale-105 transition">
+          <button
+            type="submit"
+            className="w-full py-4 rounded-full bg-white text-black font-semibold
+            hover:scale-[1.02] transition"
+          >
             Continue
           </button>
         </form>
       </div>
+
+      <Footer />
     </section>
   );
 }
