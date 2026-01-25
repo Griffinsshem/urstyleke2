@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { usePathname } from "next/navigation";
-import { isAuthenticated, logoutUser } from "@/lib/auth";
+import { isAuthenticated, signOut } from "@/lib/auth";
 
 export default function Navbar() {
   const pathname = usePathname();
@@ -67,7 +67,7 @@ export default function Navbar() {
             </>
           ) : (
             <button
-              onClick={logoutUser}
+              onClick={signOut}
               className="px-5 py-2 rounded-full border border-red-500/30 text-sm
               text-red-400 hover:bg-red-500 hover:text-white transition"
             >
