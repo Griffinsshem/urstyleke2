@@ -7,6 +7,7 @@ const products = Array.from({ length: 9 }, (_, i) => ({
   title: "Premium Womenswear",
   category: "Women",
   price: 5200,
+  image: "/images/women.jpg",
 }));
 
 export default function WomenPage() {
