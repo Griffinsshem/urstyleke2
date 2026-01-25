@@ -5,12 +5,12 @@ export const isAuthenticated = () => {
   return Boolean(localStorage.getItem("auth-user"));
 };
 
-export const loginUser = (user) => {
+export const signIn = (user) => {
   localStorage.setItem("auth-user", JSON.stringify(user));
   window.dispatchEvent(new Event("auth-changed"));
 };
 
-export const logoutUser = () => {
+export const signOut = () => {
   localStorage.removeItem("auth-user");
   window.dispatchEvent(new Event("auth-changed"));
 };
