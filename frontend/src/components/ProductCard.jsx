@@ -24,13 +24,15 @@ export default function ProductCard({
     <div className="group bg-neutral-900 border border-white/10 rounded-2xl overflow-hidden hover:border-white/30 transition">
 
       {/* Image */}
-      <div className="relative h-64 overflow-hidden">
-        <Image
-          src={image}
-          alt={title}
-          fill
-          className="object-cover transition-transform duration-500 group-hover:scale-110"
-        />
+      <div className="relative h-64 overflow-hidden bg-neutral-800">
+        {image && (
+          <Image
+            src={image}
+            alt={title}
+            fill
+            className="object-cover transition-transform duration-500 group-hover:scale-110"
+          />
+        )}
         <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition" />
       </div>
 
