@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
 
 export default function SignInPage() {
+  const router = useRouter();
+
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
@@ -14,8 +17,12 @@ export default function SignInPage() {
     e.preventDefault();
 
     // TEMP: frontend-only auth
-    alert("Signed in successfully");
-    window.location.href = "/";
+    const user = { email };
+
+    localStorage.setItem("user", JSON.stringify(user));
+    window.dispatchEvent(new Event("auth-updated"));
+
+    router.push("/");
   };
 
   return (
@@ -66,10 +73,7 @@ export default function SignInPage() {
         {/* Footer */}
         <p className="text-center text-sm text-gray-400 mt-8">
           Don’t have an account?{" "}
-          <Link
-            href="/register"
-            className="text-white hover:underline transition"
-          >
+          <Link href="/register" className="text-white hover:underline">
             Register
           </Link>
         </p>
