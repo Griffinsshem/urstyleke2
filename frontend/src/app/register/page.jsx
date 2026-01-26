@@ -1,12 +1,15 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { FaUserPlus } from "react-icons/fa";
 
 export default function RegisterPage() {
+  const router = useRouter();
+
   const [name, setName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -14,9 +17,13 @@ export default function RegisterPage() {
   const handleRegister = (e) => {
     e.preventDefault();
 
-    // TEMP: frontend-only (backend comes later)
-    alert("Account created successfully. Please sign in.");
-    window.location.href = "/signin";
+    // TEMP: frontend-only auth (backend later)
+    const user = { name, email };
+
+    localStorage.setItem("user", JSON.stringify(user));
+    window.dispatchEvent(new Event("auth-updated"));
+
+    router.push("/");
   };
 
   return (
@@ -77,10 +84,7 @@ export default function RegisterPage() {
         {/* Footer */}
         <p className="text-center text-sm text-gray-400 mt-8">
           Already have an account?{" "}
-          <Link
-            href="/signin"
-            className="text-white hover:underline transition"
-          >
+          <Link href="/signin" className="text-white hover:underline">
             Sign In
           </Link>
         </p>
