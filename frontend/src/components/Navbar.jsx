@@ -24,14 +24,14 @@ export default function Navbar() {
     window.addEventListener("cart-updated", syncCart);
 
     return () => {
-      window.removeEventListener("storage", syncAuth);
+      window.removeEventListener("auth-updated", syncAuth);
       window.removeEventListener("cart-updated", syncCart);
     };
   }, []);
 
   const handleLogout = () => {
     localStorage.removeItem("user");
-    window.dispatchEvent(new Event("storage"));
+    window.dispatchEvent(new Event("auth-updated"));
     window.location.href = "/";
   };
 
