@@ -2,99 +2,80 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { FaShoppingBag, FaSignOutAlt } from "react-icons/fa";
-import { getCartCount } from "@/lib/cart";
+import { isAuthenticated, signOut } from "@/lib/auth";
+import { FaUser, FaSignOutAlt } from "react-icons/fa";
 
 export default function Navbar() {
-  const [user, setUser] = useState(null);
-  const [cartCount, setCartCount] = useState(0);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   useEffect(() => {
+    // initial check
+    setLoggedIn(isAuthenticated());
+
     const syncAuth = () => {
-      const storedUser = localStorage.getItem("user");
-      setUser(storedUser ? JSON.parse(storedUser) : null);
+      setLoggedIn(isAuthenticated());
     };
 
-    const syncCart = () => setCartCount(getCartCount());
-
-    syncAuth();
-    syncCart();
-
+    window.addEventListener("auth-changed", syncAuth);
     window.addEventListener("storage", syncAuth);
-    window.addEventListener("cart-updated", syncCart);
 
     return () => {
-      window.removeEventListener("auth-updated", syncAuth);
-      window.removeEventListener("cart-updated", syncCart);
+      window.removeEventListener("auth-changed", syncAuth);
+      window.removeEventListener("storage", syncAuth);
     };
   }, []);
 
   const handleLogout = () => {
-    localStorage.removeItem("user");
-    window.dispatchEvent(new Event("auth-updated"));
-    window.location.href = "/";
+    signOut();
   };
 
   return (
-    <header className="fixed top-0 left-0 w-full z-50 bg-black/50 backdrop-blur-md border-b border-white/10">
-      <nav className="mx-auto max-w-7xl px-6 py-6 flex items-center justify-between text-white">
-        {/* Brand */}
-        <Link
-          href="/"
-          className="flex items-center gap-2 text-sm font-semibold tracking-[0.25em] uppercase"
-        >
-          <FaShoppingBag className="w-5 h-5" />
-          UrStyleKE
+    <nav className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-white/10 px-6 py-5">
+      <div className="max-w-7xl mx-auto flex justify-between items-center">
+        {/* Logo */}
+        <Link href="/" className="text-white font-extrabold tracking-widest">
+          URSTYLEKE
         </Link>
 
         {/* Links */}
-        <ul className="hidden md:flex items-center gap-10 text-xs tracking-[0.3em] uppercase text-gray-300">
-          <li><Link href="/men" className="hover:text-white">Men</Link></li>
-          <li><Link href="/women" className="hover:text-white">Women</Link></li>
-          <li><Link href="/collection" className="hover:text-white">Collection</Link></li>
-        </ul>
-
-        {/* Actions */}
-        <div className="flex items-center gap-6">
-          {/* Cart */}
-          <Link href="/checkout" className="relative">
-            <FaShoppingBag className="w-5 h-5 hover:text-white transition" />
-            {cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-white text-black text-[10px] px-2 py-[2px] rounded-full">
-                {cartCount}
-              </span>
-            )}
+        <div className="flex items-center gap-8 text-sm tracking-widest uppercase">
+          <Link href="/men" className="hover:text-white transition">
+            Men
+          </Link>
+          <Link href="/women" className="hover:text-white transition">
+            Women
+          </Link>
+          <Link href="/collection" className="hover:text-white transition">
+            Collection
           </Link>
 
           {/* Auth */}
-          {!user ? (
+          {!loggedIn ? (
             <>
               <Link
-                href="/register"
-                className="text-xs tracking-[0.25em] uppercase hover:text-white"
-              >
-                Register
-              </Link>
-              <Link
                 href="/signin"
-                className="text-xs tracking-[0.25em] uppercase border border-white/30 px-5 py-2 rounded-full
-                hover:bg-white hover:text-black transition"
+                className="border border-white/20 px-5 py-2 rounded-full hover:bg-white hover:text-black transition"
               >
                 Sign In
+              </Link>
+              <Link
+                href="/register"
+                className="bg-white text-black px-5 py-2 rounded-full hover:scale-105 transition"
+              >
+                Register
               </Link>
             </>
           ) : (
             <button
               onClick={handleLogout}
-              className="flex items-center gap-2 text-xs tracking-[0.25em] uppercase
-              border border-white/30 px-5 py-2 rounded-full hover:bg-white hover:text-black transition"
+              className="flex items-center gap-2 border border-white/20 px-5 py-2 rounded-full hover:bg-white hover:text-black transition"
             >
               <FaSignOutAlt />
               Sign Out
             </button>
           )}
         </div>
-      </nav>
-    </header>
+      </div>
+    </nav>
   );
 }
