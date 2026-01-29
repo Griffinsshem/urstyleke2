@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { FaUserPlus } from "react-icons/fa";
+import { registerUser } from "@/lib/auth";
 
 export default function RegisterPage() {
   const router = useRouter();
@@ -14,17 +15,18 @@ export default function RegisterPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleRegister = (e) => {
+  const handleRegister = async (e) => {
     e.preventDefault();
 
-    // TEMP: frontend-only auth (backend later)
-    const user = { name, email };
-
-    localStorage.setItem("user", JSON.stringify(user));
-    window.dispatchEvent(new Event("auth-updated"));
-
-    router.push("/");
+    try {
+      await registerUser({ name, email, password });
+      alert("Account created successfully. Please sign in.");
+      window.location.href = "/signin";
+    } catch (err) {
+      alert(err.message);
+    }
   };
+
 
   return (
     <section className="min-h-screen bg-black text-white pt-32 px-6">
