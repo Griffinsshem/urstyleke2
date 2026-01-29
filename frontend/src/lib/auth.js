@@ -1,4 +1,4 @@
-
+// src/lib/auth.js
 
 const API_URL = "http://127.0.0.1:5000";
 
@@ -7,9 +7,9 @@ export const isAuthenticated = () => {
   return Boolean(localStorage.getItem("auth-user"));
 };
 
-export const signIn = (user) => {
-  localStorage.setItem("auth-user", JSON.stringify(user));
-  window.dispatchEvent(new Event("auth-changed"));
+export const getUser = () => {
+  if (typeof window === "undefined") return null;
+  return JSON.parse(localStorage.getItem("auth-user"));
 };
 
 export const signOut = () => {
@@ -17,45 +17,33 @@ export const signOut = () => {
   window.dispatchEvent(new Event("auth-changed"));
 };
 
-export const getUser = () => {
-  if (typeof window === "undefined") return null;
-  return JSON.parse(localStorage.getItem("auth-user"));
-};
-
-/* =========================
-   API CALLS (NEW)
-   ========================= */
-
-export const registerUser = async (data) => {
+export const registerUser = async ({ name, email, password }) => {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ name, email, password }),
   });
 
-  const result = await res.json();
+  const data = await res.json();
 
-  if (!res.ok) {
-    throw new Error(result.message || "Registration failed");
-  }
+  if (!res.ok) throw new Error(data.error || "Registration failed");
 
-  signIn(result.user);
-  return result;
+  return data;
 };
 
-export const loginUser = async (data) => {
+export const loginUser = async ({ email, password }) => {
   const res = await fetch(`${API_URL}/auth/login`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify(data),
+    body: JSON.stringify({ email, password }),
   });
 
-  const result = await res.json();
+  const data = await res.json();
 
-  if (!res.ok) {
-    throw new Error(result.message || "Login failed");
-  }
+  if (!res.ok) throw new Error(data.error || "Login failed");
 
-  signIn(result.user);
-  return result;
+  localStorage.setItem("auth-user", JSON.stringify(data.user));
+  window.dispatchEvent(new Event("auth-changed"));
+
+  return data.user;
 };
