@@ -6,6 +6,7 @@ import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 import Link from "next/link";
 import { FaSignInAlt } from "react-icons/fa";
+import { loginUser } from "@/lib/auth";
 
 export default function SignInPage() {
   const router = useRouter();
@@ -13,17 +14,17 @@ export default function SignInPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-  const handleSignIn = (e) => {
+  const handleSignIn = async (e) => {
     e.preventDefault();
 
-    // TEMP: frontend-only auth
-    const user = { email };
-
-    localStorage.setItem("user", JSON.stringify(user));
-    window.dispatchEvent(new Event("auth-updated"));
-
-    router.push("/");
+    try {
+      await loginUser({ email, password });
+      window.location.href = "/";
+    } catch (err) {
+      alert(err.message);
+    }
   };
+
 
   return (
     <section className="min-h-screen bg-black text-white pt-32 px-6">
