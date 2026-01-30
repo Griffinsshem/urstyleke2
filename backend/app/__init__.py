@@ -16,6 +16,8 @@ def create_app():
     db.init_app(app)
     migrate.init_app(app, db)
 
+    from app import models
+
     # Register blueprints
     from app.routes.auth import auth_bp
 
