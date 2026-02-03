@@ -1,40 +1,40 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
+from flask_jwt_extended import create_access_token
 
-auth_bp = Blueprint("auth", __name__)
+from ..extensions import db
+from ..models.user import User
 
-# TEMP in-memory user store (DB comes next)
-USERS = {}
 
+auth_bp = Blueprint("auth", __name__, url_prefix="/api/auth")
+
+
+# Register
 @auth_bp.route("/register", methods=["POST"])
 def register():
     data = request.get_json()
 
-    name = data.get("name")
     email = data.get("email")
     password = data.get("password")
 
-    if not name or not email or not password:
-        return jsonify({"error": "All fields are required"}), 400
+    if not email or not password:
+        return jsonify({"error": "Email and password required"}), 400
 
-    if email in USERS:
+    if User.query.filter_by(email=email).first():
         return jsonify({"error": "User already exists"}), 409
 
-    USERS[email] = {
-        "name": name,
-        "email": email,
-        "password": generate_password_hash(password)
-    }
+    user = User(
+        email=email,
+        password=generate_password_hash(password)
+    )
 
-    return jsonify({
-        "message": "Account created successfully",
-        "user": {
-            "name": name,
-            "email": email
-        }
-    }), 201
+    db.session.add(user)
+    db.session.commit()
+
+    return jsonify({"message": "User registered successfully"}), 201
 
 
+# Login
 @auth_bp.route("/login", methods=["POST"])
 def login():
     data = request.get_json()
@@ -42,15 +42,15 @@ def login():
     email = data.get("email")
     password = data.get("password")
 
-    user = USERS.get(email)
+    user = User.query.filter_by(email=email).first()
 
-    if not user or not check_password_hash(user["password"], password):
-        return jsonify({"error": "Invalid email or password"}), 401
+    if not user or not check_password_hash(user.password, password):
+        return jsonify({"error": "Invalid credentials"}), 401
+
+    token = create_access_token(identity=user.id)
 
     return jsonify({
-        "message": "Login successful",
-        "user": {
-            "name": user["name"],
-            "email": user["email"]
-        }
+        "access_token": token,
+        "user_id": user.id,
+        "email": user.email
     }), 200
