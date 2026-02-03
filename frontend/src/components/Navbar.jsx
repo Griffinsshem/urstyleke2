@@ -3,13 +3,13 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { isAuthenticated, signOut } from "@/lib/auth";
-import { FaUser, FaSignOutAlt } from "react-icons/fa";
+import { FaSignOutAlt, FaBars, FaTimes } from "react-icons/fa";
 
 export default function Navbar() {
   const [loggedIn, setLoggedIn] = useState(false);
+  const [menuOpen, setMenuOpen] = useState(false);
 
   useEffect(() => {
-    // initial check
     setLoggedIn(isAuthenticated());
 
     const syncAuth = () => {
@@ -27,7 +27,49 @@ export default function Navbar() {
 
   const handleLogout = () => {
     signOut();
+    setMenuOpen(false);
   };
+
+  const NavLinks = () => (
+    <>
+      <Link href="/men" onClick={() => setMenuOpen(false)}>
+        Men
+      </Link>
+      <Link href="/women" onClick={() => setMenuOpen(false)}>
+        Women
+      </Link>
+      <Link href="/collection" onClick={() => setMenuOpen(false)}>
+        Collection
+      </Link>
+
+      {!loggedIn ? (
+        <>
+          <Link
+            href="/signin"
+            onClick={() => setMenuOpen(false)}
+            className="border border-white/20 px-5 py-2 rounded-full hover:bg-white hover:text-black transition"
+          >
+            Sign In
+          </Link>
+          <Link
+            href="/register"
+            onClick={() => setMenuOpen(false)}
+            className="bg-white text-black px-5 py-2 rounded-full hover:scale-105 transition"
+          >
+            Register
+          </Link>
+        </>
+      ) : (
+        <button
+          onClick={handleLogout}
+          className="flex items-center gap-2 border border-white/20 px-5 py-2 rounded-full hover:bg-white hover:text-black transition"
+        >
+          <FaSignOutAlt />
+          Sign Out
+        </button>
+      )}
+    </>
+  );
 
   return (
     <nav className="fixed top-0 left-0 right-0 z-50 bg-black border-b border-white/10 px-6 py-5">
@@ -37,45 +79,28 @@ export default function Navbar() {
           URSTYLEKE
         </Link>
 
-        {/* Links */}
-        <div className="flex items-center gap-8 text-sm tracking-widest uppercase">
-          <Link href="/men" className="hover:text-white transition">
-            Men
-          </Link>
-          <Link href="/women" className="hover:text-white transition">
-            Women
-          </Link>
-          <Link href="/collection" className="hover:text-white transition">
-            Collection
-          </Link>
-
-          {/* Auth */}
-          {!loggedIn ? (
-            <>
-              <Link
-                href="/signin"
-                className="border border-white/20 px-5 py-2 rounded-full hover:bg-white hover:text-black transition"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/register"
-                className="bg-white text-black px-5 py-2 rounded-full hover:scale-105 transition"
-              >
-                Register
-              </Link>
-            </>
-          ) : (
-            <button
-              onClick={handleLogout}
-              className="flex items-center gap-2 border border-white/20 px-5 py-2 rounded-full hover:bg-white hover:text-black transition"
-            >
-              <FaSignOutAlt />
-              Sign Out
-            </button>
-          )}
+        {/* Desktop Links */}
+        <div className="hidden md:flex items-center gap-8 text-sm tracking-widest uppercase">
+          <NavLinks />
         </div>
+
+        {/* Mobile Menu Button */}
+        <button
+          onClick={() => setMenuOpen(!menuOpen)}
+          className="md:hidden text-white text-xl"
+        >
+          {menuOpen ? <FaTimes /> : <FaBars />}
+        </button>
       </div>
+
+      {/* Mobile Menu */}
+      {menuOpen && (
+        <div className="md:hidden mt-6 px-6">
+          <div className="flex flex-col gap-6 text-sm tracking-widest uppercase">
+            <NavLinks />
+          </div>
+        </div>
+      )}
     </nav>
   );
 }
