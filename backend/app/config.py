@@ -7,6 +7,8 @@ load_dotenv()
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY", "dev-secret")
 
+    JWT_SECRET_KEY = os.getenv("SECRET_KEY")
+
     DB_TYPE = os.getenv("DB_TYPE", "sqlite")
 
     if DB_TYPE == "sqlite":
