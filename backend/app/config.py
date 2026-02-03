@@ -9,12 +9,11 @@ class Config:
 
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY", "jwt-dev-secret")
 
-    DB_TYPE = os.getenv("DB_TYPE", "sqlite")
+    DB_TYPE = os.getenv("DB_TYPE", "sqlite").lower()
 
     if DB_TYPE == "sqlite":
         SQLALCHEMY_DATABASE_URI = "sqlite:///urstyleke.db"
     else:
-
         SQLALCHEMY_DATABASE_URI = (
             f"postgresql://{os.getenv('DB_USER')}:"
             f"{os.getenv('DB_PASSWORD')}@"
