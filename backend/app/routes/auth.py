@@ -1,6 +1,6 @@
 from flask import Blueprint, request, jsonify
 from werkzeug.security import generate_password_hash, check_password_hash
-from flask_jwt_extended import create_access_token
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt_identity
 
 from ..extensions import db
 from ..models.user import User
@@ -54,3 +54,12 @@ def login():
         "user_id": user.id,
         "email": user.email
     }), 200
+
+@auth_bp.route("/me", methods=["GET"])
+@jwt_required()
+def me():
+    user_id = get_jwt_identity()
+    return {
+        "message": "Access granted",
+        "user_id": user_id
+    }, 200
