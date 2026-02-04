@@ -12,7 +12,7 @@ const USER_KEY = "urstyleke_user";
 
 export const isAuthenticated = () => {
   if (typeof window === "undefined") return false;
-  return Boolean(localStorage.getItem(TOKEN_KEY));
+  return !!localStorage.getItem(TOKEN_KEY);
 };
 
 export const getToken = () => {
@@ -25,6 +25,13 @@ export const getUser = () => {
 
   const user = localStorage.getItem(USER_KEY);
   return user ? JSON.parse(user) : null;
+};
+
+export const setSession = (token, user) => {
+  localStorage.setItem(TOKEN_KEY, token);
+  localStorage.setItem(USER_KEY, JSON.stringify(user));
+
+  window.dispatchEvent(new Event("auth-changed"));
 };
 
 export const signOut = () => {
@@ -71,23 +78,18 @@ export const loginUser = async ({ email, password }) => {
     throw new Error(data.error || "Login failed");
   }
 
-  // Save JWT + user
-  localStorage.setItem(TOKEN_KEY, data.access_token);
-  localStorage.setItem(
-    USER_KEY,
-    JSON.stringify({
-      id: data.user_id,
-      email: data.email,
-    })
-  );
+  const user = {
+    id: data.user_id,
+    email: data.email,
+  };
 
-  window.dispatchEvent(new Event("auth-changed"));
+  setSession(data.access_token, user);
 
-  return data;
+  return user;
 };
 
 /* =========================
-   AUTH FETCH (JWT REQUESTS)
+   AUTH FETCH
 ========================= */
 
 export const authFetch = async (url, options = {}) => {
@@ -106,12 +108,6 @@ export const authFetch = async (url, options = {}) => {
     ...options,
     headers,
   });
-
-  // Auto logout if token expired
-  if (res.status === 401) {
-    signOut();
-    window.location.href = "/login";
-  }
 
   return res;
 };
