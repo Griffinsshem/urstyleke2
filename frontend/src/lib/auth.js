@@ -115,3 +115,32 @@ export const authFetch = async (url, options = {}) => {
 
   return res;
 };
+
+/* =========================
+   FETCH CURRENT USER
+========================= */
+
+export const fetchMe = async () => {
+  const res = await authFetch("/auth/me", {
+    method: "GET",
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch user");
+  }
+
+  const data = await res.json();
+
+  localStorage.setItem(
+    USER_KEY,
+    JSON.stringify({
+      id: data.id,
+      email: data.email,
+      username: data.username,
+    })
+  );
+
+  window.dispatchEvent(new Event("auth-changed"));
+
+  return data;
+};
