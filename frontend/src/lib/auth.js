@@ -38,13 +38,13 @@ export const signOut = () => {
    AUTH API CALLS
 ========================= */
 
-export const registerUser = async ({ username, email, password }) => {
+export const registerUser = async ({ name, email, password }) => {
   const res = await fetch(`${API_URL}/auth/register`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
-    body: JSON.stringify({ username, email, password }),
+    body: JSON.stringify({ name, email, password }),
   });
 
   const data = await res.json();
@@ -117,30 +117,15 @@ export const authFetch = async (url, options = {}) => {
 };
 
 /* =========================
-   FETCH CURRENT USER
+   CURRENT USER
 ========================= */
 
 export const fetchMe = async () => {
-  const res = await authFetch("/auth/me", {
-    method: "GET",
-  });
+  const res = await authFetch("/auth/me");
 
   if (!res.ok) {
-    throw new Error("Failed to fetch user");
+    throw new Error("Unauthorized");
   }
 
-  const data = await res.json();
-
-  localStorage.setItem(
-    USER_KEY,
-    JSON.stringify({
-      id: data.id,
-      email: data.email,
-      username: data.username,
-    })
-  );
-
-  window.dispatchEvent(new Event("auth-changed"));
-
-  return data;
+  return res.json();
 };
