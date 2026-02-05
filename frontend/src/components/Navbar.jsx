@@ -45,7 +45,7 @@ export default function Navbar() {
       {!loggedIn ? (
         <>
           <Link
-            href="/signin"
+            href="/login"
             onClick={() => setMenuOpen(false)}
             className="border border-white/20 px-5 py-2 rounded-full hover:bg-white hover:text-black transition"
           >
