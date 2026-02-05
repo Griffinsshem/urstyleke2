@@ -69,3 +69,24 @@ def me():
         "id": user.id,
         "email": user.email,
     }, 200
+
+# Update profile
+@auth_bp.route("/profile", methods=["PUT"])
+@jwt_required()
+def update_profile():
+    user_id = get_jwt_identity()
+
+    data = request.get_json()
+    password = data.get("password")
+
+    user = User.query.get(user_id)
+
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+
+    if password:
+        user.password = generate_password_hash(password)
+
+    db.session.commit()
+
+    return jsonify({"message": "Profile updated"}), 200
