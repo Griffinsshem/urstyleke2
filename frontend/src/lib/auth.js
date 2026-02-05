@@ -96,9 +96,10 @@ export const authFetch = async (url, options = {}) => {
   const token = getToken();
 
   const headers = {
-    "Content-Type": "application/json",
+    ...(options.body && { "Content-Type": "application/json" }),
     ...options.headers,
   };
+
 
   if (token) {
     headers.Authorization = `Bearer ${token}`;
