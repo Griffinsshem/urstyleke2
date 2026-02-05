@@ -59,7 +59,13 @@ def login():
 @jwt_required()
 def me():
     user_id = get_jwt_identity()
+
+    user = User.query.get(user_id)
+
+    if not user:
+        return {"error": "User not found"}, 404
+
     return {
-        "message": "Access granted",
-        "user_id": user_id
+        "id": user.id,
+        "email": user.email,
     }, 200
