@@ -49,7 +49,7 @@ export default function Navbar() {
             onClick={() => setMenuOpen(false)}
             className="border border-white/20 px-5 py-2 rounded-full hover:bg-white hover:text-black transition"
           >
-            Sign In
+            Login
           </Link>
           <Link
             href="/register"
