@@ -22,8 +22,12 @@ export default function ProfilePage() {
     try {
       const res = await authFetch("/auth/profile", {
         method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
         body: JSON.stringify({ password }),
       });
+
 
       const data = await res.json();
 
