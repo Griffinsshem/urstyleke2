@@ -5,29 +5,9 @@ import ProductGrid from "@/components/ProductGrid";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const PRODUCTS_PER_PAGE = 9;
-
-const products = [
-  ...Array.from({ length: 12 }, (_, i) => ({
-    id: `men-premium-${i + 1}`,
-    title: `Premium Menswear ${i + 1}`,
-    category: "Men",
-    price: 4500,
-  })),
-  ...Array.from({ length: 12 }, (_, i) => ({
-    id: `women-premium-${i + 1}`,
-    title: `Premium Womenswear ${i + 1}`,
-    category: "Women",
-    price: 5200,
-  })),
-];
-
 export default function CollectionPage() {
+  // Pagination state (for future backend pagination)
   const [page, setPage] = useState(1);
-  const totalPages = Math.ceil(products.length / PRODUCTS_PER_PAGE);
-
-  const start = (page - 1) * PRODUCTS_PER_PAGE;
-  const currentProducts = products.slice(start, start + PRODUCTS_PER_PAGE);
 
   return (
     <section className="min-h-screen bg-black text-white px-6 pt-40 pb-32">
@@ -48,10 +28,10 @@ export default function CollectionPage() {
         </p>
       </div>
 
-      {/* Products */}
-      <ProductGrid products={currentProducts} showCategory />
+      {/* Products (Now fetched from API) */}
+      <ProductGrid />
 
-      {/* Pagination */}
+      {/* Pagination (UI only for now) */}
       <div className="flex justify-center items-center gap-8 mt-24">
         <button
           disabled={page === 1}
@@ -64,14 +44,13 @@ export default function CollectionPage() {
         </button>
 
         <span className="text-xs tracking-widest text-gray-400">
-          Page {page} of {totalPages}
+          Page {page}
         </span>
 
         <button
-          disabled={page === totalPages}
           onClick={() => setPage((p) => p + 1)}
           className="px-8 py-3 text-xs tracking-[0.25em] uppercase rounded-full
-          border border-white/20 disabled:opacity-40
+          border border-white/20
           hover:bg-white hover:text-black transition"
         >
           Next
