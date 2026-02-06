@@ -2,14 +2,6 @@ import ProductGrid from "@/components/ProductGrid";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
-const products = Array.from({ length: 9 }, (_, i) => ({
-  id: `men-premium-${i + 1}`,
-  title: "Premium Menswear",
-  category: "Men",
-  price: 4500,
-  image: "/images/men.jpg",
-}));
-
 export default function MenPage() {
   return (
     <section className="min-h-screen bg-black text-white px-6 pt-40 pb-32">
@@ -29,7 +21,9 @@ export default function MenPage() {
         </p>
       </div>
 
-      <ProductGrid products={products} />
+      {/* Products from API */}
+      <ProductGrid />
+
       <Footer />
     </section>
   );
