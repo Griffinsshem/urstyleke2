@@ -1,8 +1,8 @@
 from flask import Blueprint, request, jsonify
 from flask_jwt_extended import jwt_required
 
-from app.extensions import db
-from app.models.product import Product
+from ..extensions import db
+from ..models.product import Product
 
 
 products_bp = Blueprint(
@@ -12,38 +12,30 @@ products_bp = Blueprint(
 )
 
 
-# ============================
-# GET ALL PRODUCTS (PUBLIC)
-# ============================
+# Get all products (Public)
+@products_bp.route("", methods=["GET"])
 @products_bp.route("/", methods=["GET"])
 def get_products():
 
-    category = request.args.get("category")
+    products = Product.query.all()
 
-    query = Product.query
+    result = []
 
-    # Filter by category (Men / Women)
-    if category:
-        query = query.filter_by(category=category)
-
-    products = query.all()
-
-    return jsonify([
-        {
+    for p in products:
+        result.append({
             "id": p.id,
-            "title": p.title,
-            "category": p.category,
+            "title": p.name,
+            "description": p.description,
             "price": p.price,
-            "image": p.image,
-            "created_at": p.created_at.isoformat()
-        }
-        for p in products
-    ]), 200
+            "image": p.image_url,
+            "category": p.category if hasattr(p, "category") else None,
+            "created_at": p.created_at.isoformat() if p.created_at else None
+        })
+
+    return jsonify(result), 200
 
 
-# ============================
-# GET SINGLE PRODUCT
-# ============================
+# Get single product
 @products_bp.route("/<int:product_id>", methods=["GET"])
 def get_product(product_id):
 
@@ -51,17 +43,17 @@ def get_product(product_id):
 
     return jsonify({
         "id": product.id,
-        "title": product.title,
-        "category": product.category,
+        "title": product.name,
+        "description": product.description,
         "price": product.price,
-        "image": product.image,
-        "created_at": product.created_at.isoformat()
+        "image": product.image_url,
+        "category": product.category if hasattr(product, "category") else None,
+        "created_at": product.created_at.isoformat() if product.created_at else None
     }), 200
 
 
-# ============================
-# CREATE PRODUCT (ADMIN)
-# ============================
+# Create product (Protected)
+@products_bp.route("", methods=["POST"])
 @products_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_product():
@@ -69,33 +61,26 @@ def create_product():
     data = request.get_json()
 
     title = data.get("title")
-    category = data.get("category")
     price = data.get("price")
-    image = data.get("image")
 
-    if not title or not category or not price or not image:
-        return jsonify({
-            "error": "Title, category, price and image are required"
-        }), 400
+    if not title or not price:
+        return {"error": "Title and price required"}, 400
 
     product = Product(
-        title=title,
-        category=category,
+        name=title,
+        description=data.get("description"),
         price=price,
-        image=image
+        image_url=data.get("image"),
+        category=data.get("category")
     )
 
     db.session.add(product)
     db.session.commit()
 
-    return jsonify({
-        "message": "Product created successfully"
-    }), 201
+    return {"message": "Product created"}, 201
 
 
-# ============================
-# UPDATE PRODUCT
-# ============================
+# Update product
 @products_bp.route("/<int:product_id>", methods=["PUT"])
 @jwt_required()
 def update_product(product_id):
@@ -104,21 +89,18 @@ def update_product(product_id):
 
     data = request.get_json()
 
-    product.title = data.get("title", product.title)
-    product.category = data.get("category", product.category)
+    product.name = data.get("title", product.name)
+    product.description = data.get("description", product.description)
     product.price = data.get("price", product.price)
-    product.image = data.get("image", product.image)
+    product.image_url = data.get("image", product.image_url)
+    product.category = data.get("category", product.category)
 
     db.session.commit()
 
-    return jsonify({
-        "message": "Product updated successfully"
-    }), 200
+    return {"message": "Product updated"}, 200
 
 
-# ============================
-# DELETE PRODUCT
-# ============================
+# Delete product
 @products_bp.route("/<int:product_id>", methods=["DELETE"])
 @jwt_required()
 def delete_product(product_id):
@@ -128,6 +110,4 @@ def delete_product(product_id):
     db.session.delete(product)
     db.session.commit()
 
-    return jsonify({
-        "message": "Product deleted successfully"
-    }), 200
+    return {"message": "Product deleted"}, 200
