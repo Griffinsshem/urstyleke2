@@ -29,7 +29,7 @@ export default function CollectionPage() {
       </div>
 
       {/* Products (Now fetched from API) */}
-      <ProductGrid />
+      <ProductGrid category="collection" />
 
       {/* Pagination (UI only for now) */}
       <div className="flex justify-center items-center gap-8 mt-24">
