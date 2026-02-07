@@ -22,7 +22,7 @@ export default function WomenPage() {
       </div>
 
       {/* Products from API */}
-      <ProductGrid />
+      <ProductGrid category="women" />
 
       <Footer />
     </section>
