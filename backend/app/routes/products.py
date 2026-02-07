@@ -12,8 +12,9 @@ products_bp = Blueprint(
 )
 
 
+# -------------------------
 # Get all products (Public)
-@products_bp.route("", methods=["GET"])
+# -------------------------
 @products_bp.route("/", methods=["GET"])
 def get_products():
 
@@ -24,18 +25,20 @@ def get_products():
     for p in products:
         result.append({
             "id": p.id,
-            "title": p.name,
+            "title": p.title,
             "description": p.description,
             "price": p.price,
-            "image": p.image_url,
-            "category": p.category if hasattr(p, "category") else None,
+            "image": p.image,
+            "category": p.category,
             "created_at": p.created_at.isoformat() if p.created_at else None
         })
 
     return jsonify(result), 200
 
 
+# -------------------------
 # Get single product
+# -------------------------
 @products_bp.route("/<int:product_id>", methods=["GET"])
 def get_product(product_id):
 
@@ -43,17 +46,18 @@ def get_product(product_id):
 
     return jsonify({
         "id": product.id,
-        "title": product.name,
+        "title": product.title,
         "description": product.description,
         "price": product.price,
-        "image": product.image_url,
-        "category": product.category if hasattr(product, "category") else None,
+        "image": product.image,
+        "category": product.category,
         "created_at": product.created_at.isoformat() if product.created_at else None
     }), 200
 
 
+# -------------------------
 # Create product (Protected)
-@products_bp.route("", methods=["POST"])
+# -------------------------
 @products_bp.route("/", methods=["POST"])
 @jwt_required()
 def create_product():
@@ -67,10 +71,10 @@ def create_product():
         return {"error": "Title and price required"}, 400
 
     product = Product(
-        name=title,
+        title=title,
         description=data.get("description"),
         price=price,
-        image_url=data.get("image"),
+        image=data.get("image"),
         category=data.get("category")
     )
 
@@ -80,7 +84,9 @@ def create_product():
     return {"message": "Product created"}, 201
 
 
+# -------------------------
 # Update product
+# -------------------------
 @products_bp.route("/<int:product_id>", methods=["PUT"])
 @jwt_required()
 def update_product(product_id):
@@ -89,10 +95,10 @@ def update_product(product_id):
 
     data = request.get_json()
 
-    product.name = data.get("title", product.name)
+    product.title = data.get("title", product.title)
     product.description = data.get("description", product.description)
     product.price = data.get("price", product.price)
-    product.image_url = data.get("image", product.image_url)
+    product.image = data.get("image", product.image)
     product.category = data.get("category", product.category)
 
     db.session.commit()
@@ -100,7 +106,9 @@ def update_product(product_id):
     return {"message": "Product updated"}, 200
 
 
+# -------------------------
 # Delete product
+# -------------------------
 @products_bp.route("/<int:product_id>", methods=["DELETE"])
 @jwt_required()
 def delete_product(product_id):
