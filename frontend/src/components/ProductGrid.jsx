@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { getProducts } from "@/lib/products";
 
-export default function ProductGrid() {
+export default function ProductGrid({ category }) {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
@@ -25,6 +25,15 @@ export default function ProductGrid() {
     loadProducts();
   }, []);
 
+  /* Filter by category */
+  const filteredProducts = category
+    ? products.filter(
+      (p) =>
+        p.category &&
+        p.category.toLowerCase() === category.toLowerCase()
+    )
+    : products;
+
   /* Loading */
   if (loading) {
     return (
@@ -44,7 +53,7 @@ export default function ProductGrid() {
   }
 
   /* Empty */
-  if (!products.length) {
+  if (!filteredProducts.length) {
     return (
       <div className="text-center py-20 text-gray-500">
         No products available
@@ -54,13 +63,14 @@ export default function ProductGrid() {
 
   return (
     <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
-      {products.map((product) => (
+      {filteredProducts.map((product) => (
         <ProductCard
           key={product.id}
           id={product.id}
           title={product.title}
           category={product.category}
           price={product.price}
+          image={product.image}
         />
       ))}
     </div>
