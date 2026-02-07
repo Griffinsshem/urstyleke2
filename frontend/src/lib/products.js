@@ -14,14 +14,20 @@ function getToken() {
  * Get all products
  */
 export async function getProducts() {
-  const res = await fetch(`${API_URL}/products`);
+  try {
+    const res = await fetch(`${API_URL}/products/`);
 
-  if (!res.ok) {
-    throw new Error("Failed to fetch products");
+    if (!res.ok) {
+      throw new Error("Failed to fetch products");
+    }
+
+    return await res.json();
+  } catch (error) {
+    console.error("Fetch products error:", error);
+    return [];
   }
-
-  return res.json();
 }
+
 
 /**
  * Get single product
