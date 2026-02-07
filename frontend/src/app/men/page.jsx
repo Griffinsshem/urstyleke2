@@ -22,7 +22,7 @@ export default function MenPage() {
       </div>
 
       {/* Products from API */}
-      <ProductGrid />
+      <ProductGrid category="men" />
 
       <Footer />
     </section>
