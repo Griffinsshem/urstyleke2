@@ -4,12 +4,14 @@ import { useEffect, useState } from "react";
 import ProductCard from "@/components/ProductCard";
 import { getProducts } from "@/lib/products";
 
-export default function ProductGrid({ category }) {
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState(true);
+export default function ProductGrid({ products: initialProducts = null }) {
+  const [products, setProducts] = useState(initialProducts || []);
+  const [loading, setLoading] = useState(!initialProducts);
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (initialProducts) return;
+
     async function loadProducts() {
       try {
         const data = await getProducts();
@@ -23,16 +25,7 @@ export default function ProductGrid({ category }) {
     }
 
     loadProducts();
-  }, []);
-
-  /* Filter by category */
-  const filteredProducts = category
-    ? products.filter(
-      (p) =>
-        p.category &&
-        p.category.toLowerCase() === category.toLowerCase()
-    )
-    : products;
+  }, [initialProducts]);
 
   /* Loading */
   if (loading) {
@@ -53,7 +46,7 @@ export default function ProductGrid({ category }) {
   }
 
   /* Empty */
-  if (!filteredProducts.length) {
+  if (!products.length) {
     return (
       <div className="text-center py-20 text-gray-500">
         No products available
@@ -63,7 +56,7 @@ export default function ProductGrid({ category }) {
 
   return (
     <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-10">
-      {filteredProducts.map((product) => (
+      {products.map((product) => (
         <ProductCard
           key={product.id}
           id={product.id}
