@@ -56,7 +56,7 @@ def create_product():
     title = data.get("title")
     price = data.get("price")
     category = data.get("category")
-    image = data.get("image")
+    image = data.get("image") or "/images/placeholder.jpg"
 
     if not title or not price:
         return {"error": "Title and price are required"}, 400
