@@ -1,13 +1,25 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { getProducts } from "@/lib/products";
 import ProductGrid from "@/components/ProductGrid";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 export default function CollectionPage() {
-  // Pagination state (for future backend pagination)
+
   const [page, setPage] = useState(1);
+  const [products, setProducts] = useState([]);
+
+  useEffect(() => {
+    async function loadProducts() {
+      const data = await getProducts();
+      setProducts(data);
+    }
+
+    loadProducts();
+  }, []);
+
 
   return (
     <section className="min-h-screen bg-black text-white px-6 pt-40 pb-32">
@@ -28,10 +40,10 @@ export default function CollectionPage() {
         </p>
       </div>
 
-      {/* Products (Now fetched from API) */}
-      <ProductGrid />
 
-      {/* Pagination (UI only for now) */}
+      <ProductGrid products={products} />
+
+
       <div className="flex justify-center items-center gap-8 mt-24">
         <button
           disabled={page === 1}
