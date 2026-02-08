@@ -3,6 +3,8 @@
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Navbar from "@/components/Navbar";
+import Footer from "@/components/Footer";
 
 import {
   FaUser,
@@ -36,6 +38,7 @@ export default function DashboardPage() {
     <div className="min-h-screen bg-black text-white pt-28 px-6">
 
       <div className="max-w-6xl mx-auto">
+        <Navbar />
 
         {/* Header */}
         <div className="mb-10">
@@ -84,6 +87,7 @@ export default function DashboardPage() {
           />
 
         </div>
+        <Footer />
       </div>
     </div>
   );
