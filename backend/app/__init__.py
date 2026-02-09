@@ -27,6 +27,11 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
+
+    from app.models.user import User
+    from app.models.product import Product
+    from app.models.order import Order
+
     # Register blueprints
     from .routes.auth import auth_bp
     from .routes.products import products_bp
