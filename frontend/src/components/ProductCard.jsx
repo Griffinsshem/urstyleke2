@@ -19,11 +19,7 @@ export default function ProductCard({
       <div className="relative h-64 overflow-hidden bg-neutral-800">
         {image && (
           <Image
-            src={
-              image?.startsWith("https")
-                ? "/images/placeholder.jpg"
-                : image || "/images/placeholder.jpg"
-            }
+            src={image || "/images/placeholder.jpg"}
             alt={title}
             fill
             className="object-cover group-hover:scale-110 transition duration-500"
