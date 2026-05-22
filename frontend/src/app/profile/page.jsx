@@ -5,7 +5,7 @@ import { useAuth } from "@/context/AuthContext";
 import { authFetch } from "@/lib/auth";
 
 import { FaUser, FaLock, FaSave } from "react-icons/fa";
-import Navbar from "@/components/Navbar";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Footer from "@/components/Footer";
 
 export default function ProfilePage() {
@@ -47,14 +47,14 @@ export default function ProfilePage() {
   if (!user) return null;
 
   return (
-    <div className="min-h-screen bg-black text-white pt-28 px-6">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-black text-white pt-28 px-6">
 
-      <div className="max-w-lg mx-auto bg-gray-900 border border-gray-800 rounded-2xl p-8">
-        <Navbar />
+        <div className="max-w-lg mx-auto bg-gray-900 border border-gray-800 rounded-2xl p-8">
 
-        <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
-          <FaUser /> Profile
-        </h1>
+          <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
+            <FaUser /> Profile
+          </h1>
 
         {/* Info */}
         <p className="text-gray-400 mb-6">
@@ -108,8 +108,9 @@ export default function ProfilePage() {
           </button>
 
         </form>
+        </div>
+        <Footer />
       </div>
-      <Footer />
-    </div>
+    </ProtectedRoute>
   );
 }

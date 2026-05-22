@@ -2,8 +2,7 @@
 
 import { useAuth } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import Navbar from "@/components/Navbar";
+import ProtectedRoute from "@/components/ProtectedRoute";
 import Footer from "@/components/Footer";
 
 import {
@@ -14,42 +13,24 @@ import {
 } from "react-icons/fa";
 
 export default function DashboardPage() {
-  const { user, loading } = useAuth();
-  const router = useRouter();
-
-  /* Protect route */
-  useEffect(() => {
-    if (!loading && !user) {
-      router.push("/login");
-    }
-  }, [user, loading]);
-
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-black flex items-center justify-center text-white">
-        Loading...
-      </div>
-    );
-  }
-
-  if (!user) return null;
+  const { user } = useAuth();
 
   return (
-    <div className="min-h-screen bg-black text-white pt-28 px-6">
+    <ProtectedRoute>
+      <div className="min-h-screen bg-black text-white pt-28 px-6">
 
-      <div className="max-w-6xl mx-auto">
-        <Navbar />
+        <div className="max-w-6xl mx-auto">
 
-        {/* Header */}
-        <div className="mb-10">
-          <h1 className="text-3xl font-bold mb-2">
-            Welcome 👋
-          </h1>
+          {/* Header */}
+          <div className="mb-10">
+            <h1 className="text-3xl font-bold mb-2">
+              Welcome 👋
+            </h1>
 
-          <p className="text-gray-400">
-            {user.email}
-          </p>
-        </div>
+            <p className="text-gray-400">
+              {user.email}
+            </p>
+          </div>
 
         {/* Cards */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
@@ -90,12 +71,10 @@ export default function DashboardPage() {
         <Footer />
       </div>
     </div>
+  </ProtectedRoute>
   );
 }
 
-/* =========================
-   CARD COMPONENT
-========================= */
 
 function DashboardCard({ icon, title, desc, link }) {
   const router = useRouter();
