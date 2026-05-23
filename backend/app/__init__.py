@@ -27,6 +27,16 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
+    @jwt.invalid_token_loader
+    def invalid_token_callback(error):
+        print("JWT INVALID:", error)
+        return {"error": error}, 422
+    
+    @jwt.unauthorized_loader
+    def missing_token_callback(error):
+        print("JWT MISSING:", error)
+        return {"error": error}, 401
+
 
     from app.models.user import User
     from app.models.product import Product
