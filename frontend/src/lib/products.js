@@ -1,18 +1,10 @@
-// src/lib/products.js
-
 const API_URL = process.env.NEXT_PUBLIC_API_URL || "http://127.0.0.1:5000/api";
 
-/**
- * Get JWT token from localStorage
- */
 function getToken() {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem("access_token");
+  return localStorage.getItem("urstyleke_token");
 }
 
-/**
- * Get all products
- */
 export async function getProducts() {
   try {
     const res = await fetch(`${API_URL}/products/`);
@@ -29,9 +21,6 @@ export async function getProducts() {
 }
 
 
-/**
- * Get single product
- */
 export async function getProduct(id) {
   const res = await fetch(`${API_URL}/products/${id}`);
 
