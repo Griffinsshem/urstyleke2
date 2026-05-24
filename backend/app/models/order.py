@@ -7,30 +7,32 @@ class Order(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
 
-    # Foreign Keys
     user_id = db.Column(
         db.Integer,
         db.ForeignKey("users.id"),
-        nullable=False
+        nullable=False,
+        index=True
     )
-
-    product_id = db.Column(
-        db.Integer,
-        db.ForeignKey("products.id"),
-        nullable=False
-    )
-
-    quantity = db.Column(db.Integer, default=1, nullable=False)
 
     total_price = db.Column(db.Float, nullable=False)
 
-    status = db.Column(db.String(50), default="pending")
+    status = db.Column(
+        db.String(50),
+        default="pending",
+        nullable=False
+    )
 
-    created_at = db.Column(db.DateTime, default=datetime.utcnow)
+    created_at = db.Column(
+        db.DateTime,
+        default=datetime.utcnow
+    )
 
-    # Relationships
-    user = db.relationship("User", backref="orders")
-    product = db.relationship("Product", backref="orders")
+    items = db.relationship(
+        "OrderItem",
+        backref="order",
+        cascade="all, delete-orphan",
+        lazy=True
+    )
 
     def __repr__(self):
-        return f"<Order {self.id} - User {self.user_id} - Product {self.product_id}>"
+        return f"<Order {self.id} - User {self.user_id} - Total {self.total_price}>"

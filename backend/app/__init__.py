@@ -45,9 +45,11 @@ def create_app():
     # Register blueprints
     from .routes.auth import auth_bp
     from .routes.products import products_bp
+    from .routes.orders import orders_bp
 
     app.register_blueprint(auth_bp)
     app.register_blueprint(products_bp)
+    app.register_blueprint(orders_bp)
 
     # Health check
     @app.route("/")
