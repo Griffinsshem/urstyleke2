@@ -6,8 +6,9 @@ import { usePathname } from "next/navigation";
 import { isAuthenticated, getUser, signOut } from "@/lib/auth";
 import {
   FiUser, FiChevronDown, FiLogOut,
-  FiMenu, FiX, FiGrid, FiBarChart2,
+  FiMenu, FiX, FiGrid, FiBarChart2, FiShoppingBag,
 } from "react-icons/fi";
+import { getCartCount } from "@/lib/cart";
 
 const NAV_LINKS = [
   { href: "/men",        label: "Men"        },
@@ -40,6 +41,7 @@ export default function Navbar() {
   const [menuOpen,     setMenuOpen]     = useState(false);
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [scrolled,     setScrolled]     = useState(false);
+  const [cartCount,    setCartCount]    = useState(0);
 
   const dropdownRef = useRef(null);
   const menuBtnRef  = useRef(null);
@@ -59,6 +61,19 @@ export default function Navbar() {
       window.removeEventListener("storage",      syncAuth);
     };
   }, [syncAuth]);
+
+  useEffect(() => {
+    const syncCart = () => {
+      setCartCount(getCartCount());
+    };
+    syncCart();
+    window.addEventListener("cart-updated", syncCart);
+    window.addEventListener("storage",      syncCart);
+    return () => {
+      window.removeEventListener("cart-updated", syncCart);
+      window.removeEventListener("storage",      syncCart);
+    };
+  }, []);
 
   useEffect(() => {
     setMenuOpen(false);
@@ -170,6 +185,36 @@ export default function Navbar() {
             </div>
 
             <div className="hidden md:flex items-center gap-3">
+              <Link
+                href="/checkout"
+                arial-label={`Shopping cart with ${cartCount} items`}
+                className="
+                  relative flex items-center justify-center
+                  w-10 h-10 rounded-lg
+                  border border-white/[0.1]
+                  text-white/60
+                  hover:text-white hover:border-white/20 hover:bg-white/[0.04]
+                  transition-all duration-150
+                  focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-white/30
+                  focus-visible:ring-white/30
+                "
+              >
+                <FiShoppingBag size={18} />
+                {cartCount > 0 && (
+                  <span
+                    className="
+                      absolute -top-2 -right-2
+                      min-w-[18px] h-[18px]
+                      px-1 rounded-full
+                      bg-white text-black
+                      text-[10px] font-bold
+                      flex items-center justify-center
+                    "
+                  >
+                    {cartCount}
+                  </span>
+                )}
+              </Link>
               {!loggedIn ? (
                 <>
                   <Link
@@ -282,6 +327,38 @@ export default function Navbar() {
 
                       {/* Divider */}
                       <div className="border-t border-white/[0.06] mx-3" />
+
+                      <Link
+                        href="/checkout"
+                        onclick={closeMenu}
+                        className="
+                          flex items-center justify-between
+                          px-4 py-3 rounded-xl
+                          text-xs font-semibold tracking-[0.12em] uppercase
+                          text-white/60
+                          hover:text-white hover:bg-white/[0.05]
+                          transition-colors duration-150
+                        "
+                      >
+                        <div className="flex items-center gap-3">
+                          <FiShoppingCart size={14} aria-hidden />
+                          Cart
+                        </div>
+
+                        {cartCount > 0 && (
+                          <span
+                            className="
+                              min-w-[20px] h-[20px]
+                              px-1 rounded-full
+                              bg-white text-black
+                              text-[10px] font-bold
+                              flex items-center justify-center
+                            "
+                          >
+                            {cartCount}
+                          </span>
+                        )}
+                      </Link>
 
                       <button
                         role="menuitem"
