@@ -30,15 +30,14 @@ export default function ProfilePage() {
         body: JSON.stringify({ password }),
       });
 
-
       const data = await res.json();
 
       if (!res.ok) throw new Error(data.error);
 
-      setMsg("Profile updated successfully");
+      setMsg("Profile updated successfully ✨");
       setPassword("");
     } catch (err) {
-      setMsg("Update failed");
+      setMsg("Update failed. Try again.");
     } finally {
       setLoading(false);
     }
@@ -48,68 +47,108 @@ export default function ProfilePage() {
 
   return (
     <ProtectedRoute>
-      <div className="min-h-screen bg-black text-white pt-28 px-6">
+      <div className="min-h-screen bg-[#070707] text-white pt-28 px-6 relative overflow-hidden">
 
-        <div className="max-w-lg mx-auto bg-gray-900 border border-gray-800 rounded-2xl p-8">
+        {/* soft glow background */}
+        <div className="absolute top-[-200px] left-1/2 -translate-x-1/2 w-[600px] h-[600px] bg-white/5 blur-[120px] rounded-full" />
 
-          <h1 className="text-2xl font-bold mb-6 flex items-center gap-2">
-            <FaUser /> Profile
-          </h1>
+        <div className="max-w-xl mx-auto relative z-10 animate-fadeIn">
 
-        {/* Info */}
-        <p className="text-gray-400 mb-6">
-          Email: {user.email}
-        </p>
-
-        {/* Message */}
-        {msg && (
-          <div className="bg-white/10 border border-white/20 p-3 rounded mb-4 text-sm text-center">
-            {msg}
-          </div>
-        )}
-
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="space-y-5">
-
-          <div>
-            <label className="block mb-1 text-sm">
-              New Password
-            </label>
-
-            <div className="relative">
-              <FaLock className="absolute left-3 top-3.5 text-gray-400" />
-
-              <input
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="••••••••"
-                className="
-                  w-full bg-gray-800 border border-gray-700
-                  rounded-lg pl-10 pr-3 py-2.5
-                  focus:outline-none focus:ring-2 focus:ring-white/20
-                "
-              />
+          {/* Header */}
+          <div className="text-center mb-10">
+            <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-white/5 border border-white/10 mb-4">
+              <FaUser className="text-white/70" />
             </div>
+
+            <h1 className="text-3xl font-bold tracking-tight">
+              Your Profile
+            </h1>
+
+            <p className="text-white/40 text-sm mt-2">
+              Manage your account securely
+            </p>
           </div>
 
-          <button
-            disabled={loading}
-            className="
-              w-full flex items-center justify-center gap-2
-              bg-white text-black font-medium
-              py-2.5 rounded-lg
-              hover:bg-gray-200
-              transition
-            "
-          >
-            <FaSave />
-            {loading ? "Saving..." : "Save Changes"}
-          </button>
+          {/* Card */}
+          <div className="bg-white/[0.03] backdrop-blur-xl border border-white/10 rounded-3xl p-8 shadow-[0_20px_80px_rgba(0,0,0,0.6)] transition hover:border-white/20">
 
-        </form>
+            {/* Email */}
+            <div className="mb-6">
+              <p className="text-xs uppercase tracking-widest text-white/40 mb-2">
+                Email Address
+              </p>
+              <p className="text-white/80 font-medium">
+                {user.email}
+              </p>
+            </div>
+
+            {/* Message */}
+            {msg && (
+              <div className="mb-5 text-sm px-4 py-3 rounded-xl bg-white/5 border border-white/10 text-center animate-pulse">
+                {msg}
+              </div>
+            )}
+
+            {/* Form */}
+            <form onSubmit={handleSubmit} className="space-y-5">
+
+              {/* Password */}
+              <div>
+                <label className="text-xs uppercase tracking-widest text-white/40">
+                  New Password
+                </label>
+
+                <div className="relative mt-2">
+                  <FaLock className="absolute left-4 top-3.5 text-white/30" />
+
+                  <input
+                    type="password"
+                    value={password}
+                    onChange={(e) => setPassword(e.target.value)}
+                    placeholder="Enter new secure password"
+                    className="w-full bg-white/5 border border-white/10 rounded-xl pl-11 pr-4 py-3 text-white placeholder-white/30 outline-none focus:border-white/30 focus:bg-white/[0.07] transition"
+                  />
+                </div>
+              </div>
+
+              {/* Button */}
+              <button
+                disabled={loading}
+                className="
+                  w-full flex items-center justify-center gap-2
+                  bg-white text-black font-semibold
+                  py-3 rounded-xl
+                  hover:scale-[1.02] active:scale-[0.98]
+                  transition-all duration-200
+                  disabled:opacity-50 disabled:cursor-not-allowed
+                "
+              >
+                <FaSave />
+                {loading ? "Saving..." : "Update Profile"}
+              </button>
+            </form>
+          </div>
         </div>
+
         <Footer />
+
+        {/* animations */}
+        <style jsx>{`
+          .animate-fadeIn {
+            animation: fadeIn 0.8s ease-out both;
+          }
+
+          @keyframes fadeIn {
+            from {
+              opacity: 0;
+              transform: translateY(20px);
+            }
+            to {
+              opacity: 1;
+              transform: translateY(0);
+            }
+          }
+        `}</style>
       </div>
     </ProtectedRoute>
   );
