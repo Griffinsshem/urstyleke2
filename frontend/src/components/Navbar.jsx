@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 import { isAuthenticated, getUser, signOut } from "@/lib/auth";
 import {
   FiUser, FiChevronDown, FiLogOut,
-  FiMenu, FiX, FiGrid, FiBarChart2, FiShoppingBag,
+  FiMenu, FiX, FiGrid, FiBarChart2, FiShoppingBag, FiShoppingCart
 } from "react-icons/fi";
 import { getCartCount } from "@/lib/cart";
 
@@ -18,6 +18,7 @@ const NAV_LINKS = [
 
 const USER_MENU_LINKS = [
   { href: "/profile",   label: "Profile",   Icon: FiUser      },
+  { href: "/orders",    label: "Orders",    Icon: FiShoppingBag },
   { href: "/dashboard", label: "Dashboard", Icon: FiBarChart2 },
 ];
 
@@ -330,7 +331,7 @@ export default function Navbar() {
 
                       <Link
                         href="/checkout"
-                        onclick={closeMenu}
+                        onClick={closeMenu}
                         className="
                           flex items-center justify-between
                           px-4 py-3 rounded-xl

@@ -13,12 +13,21 @@ export default function SuccessPage() {
         Thank you for your purchase.
       </p>
 
-      <Link
-        href="/collection"
-        className="bg-white text-black px-6 py-3 rounded-xl"
-      >
-        Continue Shopping
-      </Link>
+      <div className="flex gap-4">
+        <Link
+          href="/orders"
+          className="bg-white text-black px-6 py-3 rounded-xl"
+        >
+          View Orders
+        </Link>
+
+        <Link
+          href="/collection"
+          className="border border-white/20 rounded-xl px-6 py-3"
+        >
+          Continue Shopping
+        </Link>
+      </div>
     </main>
   );
 }
