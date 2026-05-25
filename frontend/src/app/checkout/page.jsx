@@ -137,11 +137,10 @@ export default function CheckoutPage() {
 
       localStorage.setItem("last_order_id", res.order_id);
 
-      localStorage.removeItem("cart");
-      window.dispatchEvent(new Event("cart-updated"));
+      clearCart();
       router.push("/payment");
     } catch (error) {
-      console.error(err.message);
+      console.error(error);
       alert(error.message || "checkout failed");
     } finally {
       setLoading(false);
