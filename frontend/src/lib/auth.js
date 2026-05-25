@@ -1,14 +1,7 @@
-// src/lib/auth.js
-
 const API_URL = "http://127.0.0.1:5000/api";
 
-// Storage keys
 const TOKEN_KEY = "urstyleke_token";
 const USER_KEY = "urstyleke_user";
-
-/* =========================
-   AUTH STATE HELPERS
-========================= */
 
 export const isAuthenticated = () => {
   if (typeof window === "undefined") return false;
@@ -40,10 +33,6 @@ export const signOut = () => {
 
   window.dispatchEvent(new Event("auth-changed"));
 };
-
-/* =========================
-   AUTH API CALLS
-========================= */
 
 export const registerUser = async ({ name, email, password }) => {
   const res = await fetch(`${API_URL}/auth/register`, {
@@ -88,10 +77,6 @@ export const loginUser = async ({ email, password }) => {
   return user;
 };
 
-/* =========================
-   AUTH FETCH
-========================= */
-
 export const authFetch = async (url, options = {}) => {
   const token = getToken();
 
@@ -113,9 +98,6 @@ export const authFetch = async (url, options = {}) => {
   return res;
 };
 
-/* =========================
-   CURRENT USER
-========================= */
 
 export const fetchMe = async () => {
   const res = await authFetch("/auth/me");

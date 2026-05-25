@@ -34,7 +34,7 @@ export default function ProfilePage() {
 
       if (!res.ok) throw new Error(data.error);
 
-      setMsg("Profile updated successfully ✨");
+      setMsg("Profile updated successfully ");
       setPassword("");
     } catch (err) {
       setMsg("Update failed. Try again.");
@@ -133,7 +133,7 @@ export default function ProfilePage() {
         <Footer />
 
         {/* animations */}
-        <style jsx>{`
+        {/* <style jsx>{`
           .animate-fadeIn {
             animation: fadeIn 0.8s ease-out both;
           }
@@ -148,8 +148,9 @@ export default function ProfilePage() {
               transform: translateY(0);
             }
           }
-        `}</style>
+        `}</style> */}
       </div>
     </ProtectedRoute>
   );
 }
+
