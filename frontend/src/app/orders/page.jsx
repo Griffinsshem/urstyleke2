@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import Link from "next/link";
 
-import Navbar from "@/components/Navbar";
+// import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
 
 import { getOrders } from "@/lib/orders";
@@ -29,7 +29,7 @@ export default function OrdersPage() {
 
   return (
     <>
-      <Navbar />
+      {/* <Navbar /> */}
 
       <main className="min-h-screen bg-[#070707] text-white pt-32 pb-24 px-6 relative overflow-hidden">
 
