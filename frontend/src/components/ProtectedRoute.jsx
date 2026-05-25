@@ -14,7 +14,7 @@ export default function ProtectedRoute({ children }) {
     }
   }, [user, loading, router]);
 
-  if (loading) {
+  if (loading || !user) {
     return (
       <div className="min-h-screen flex items-center justify-center text-white">
         Loading...

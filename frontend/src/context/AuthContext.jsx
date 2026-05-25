@@ -10,21 +10,21 @@ export const AuthProvider = ({ children }) => {
   const [loading, setLoading] = useState(true);
 
   const loadUser = async () => {
-    // First: load from localStorage
-    const localUser = getUser();
+    setLoading(true);
 
-    if (!isAuthenticated() || !localUser) {
-      setUser(null);
-      setLoading(false);
-      return;
-    }
-
-    setUser(localUser);
-
-    // Then: verify with backend
     try {
+      const localUser = getUser();
+
+      if (!isAuthenticated() || !localUser) {
+        setUser(null);
+        return;
+      }
+
+      setUser(localUser);
+
       const freshUser = await fetchMe();
       setUser(freshUser);
+
     } catch (err) {
       console.warn("Session expired");
       signOut();
