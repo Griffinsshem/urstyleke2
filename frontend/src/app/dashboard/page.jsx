@@ -28,7 +28,7 @@ export default function DashboardPage() {
           {/* Header */}
           <div className="mb-12">
             <h1 className="text-4xl font-bold tracking-tight">
-              Welcome 👋
+              Welcome
             </h1>
 
             {/* SAFE ACCESS FIX */}

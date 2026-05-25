@@ -155,8 +155,7 @@ export default function OrdersPage() {
 
       <Footer />
 
-      {/* animations */}
-      <style jsx>{`
+      {/* <style jsx>{`
         .animate-fadeIn {
           animation: fadeIn 0.7s ease-out both;
         }
@@ -184,7 +183,7 @@ export default function OrdersPage() {
             transform: translateY(0);
           }
         }
-      `}</style>
+      `}</style> */}
     </>
   );
 }
