@@ -4,7 +4,9 @@ import { useEffect, useState, useRef, useId, useCallback } from "react";
 import Link from "next/link";
 import Navbar from "@/components/Navbar";
 import Footer from "@/components/Footer";
-import { getCart, removeFromCart } from "@/lib/cart";
+import { useRouter } from "next/navigation";
+import { createOrder } from "@/lib/orders";
+import { getCart, removeFromCart, clearCart } from "@/lib/cart";
 import { FiShoppingBag, FiTrash2, FiArrowRight, FiPackage } from "react-icons/fi";
 
 const safeText = (str, max = 120) => {
@@ -104,6 +106,9 @@ export default function CheckoutPage() {
   const heroRef   = useRef(null);
   const headingId = useId();
 
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+
   const validCart = cart.filter(isValidItem);
 
   const total = validCart.reduce(
@@ -119,6 +124,29 @@ export default function CheckoutPage() {
       setCart([]);
     }
   }, []);
+
+  const handleCheckout = useCallback(async () => {
+    try {
+      setLoading(true);
+      const items = validCart.map((item) => ({
+        id: item.id,
+        quantity: safeQty(item.quantity),
+      }));
+
+      const res = await createOrder(items);
+
+      localStorage.setItem("last_order_id", res.order_id);
+
+      localStorage.removeItem("cart");
+      window.dispatchEvent(new Event("cart-updated"));
+      router.push("/payment");
+    } catch (error) {
+      console.error(err.message);
+      alert(error.message || "checkout failed");
+    } finally {
+      setLoading(false);
+    }
+  }, [validCart, router]);
 
   useEffect(() => {
     syncCart();
@@ -314,8 +342,9 @@ export default function CheckoutPage() {
                 </div>
 
                 {/* ── CTA ────────────────────────────────────────────────── */}
-                <Link
-                  href="/payment"
+                <button
+                  onClick={handleCheckout}
+                  disabled={loading || validCart.length === 0}
                   className="
                     btn-shimmer
                     mt-2 flex items-center justify-center gap-2
@@ -324,14 +353,15 @@ export default function CheckoutPage() {
                     text-xs font-bold tracking-[0.14em] uppercase
                     hover:bg-white/90 active:scale-[0.99]
                     transition-all duration-200
+                    disabled:opacity-50 disabled:cursor-not-allowed
                     focus-visible:outline-none focus-visible:ring-2
                     focus-visible:ring-white/60 focus-visible:ring-offset-2
                     focus-visible:ring-offset-[#080808]
                   "
                 >
-                  Proceed to Payment
+                  {loading ? "Processing..." : "Proceed to Payment"}
                   <FiArrowRight size={14} className="btn-arrow" aria-hidden />
-                </Link>
+                </button>
 
                 {/* Security note */}
                 <p className="text-center text-[0.62rem] text-white/20 select-none pt-1">

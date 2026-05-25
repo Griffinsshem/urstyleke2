@@ -4,6 +4,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity
 from app.extensions import db
 from app.models.order import Order
 from app.models.product import Product
+from app.models.order_item import OrderItem
 
 
 orders_bp = Blueprint(
@@ -20,31 +21,94 @@ def create_order():
 
     data = request.get_json()
 
-    product_id = data.get("product_id")
-    quantity = data.get("quantity", 1)
+    items = data.get("items", [])
 
-    if not product_id:
-        return jsonify({"error": "product_id required"}), 400
+    if not items:
+        return jsonify({"error": "Cart is empty"}), 400
 
-    product = Product.query.get(product_id)
-
-    if not product:
-        return jsonify({"error": "Product not found"}), 404
-
-    total_price = product.price * quantity
+    total_price = 0
 
     order = Order(
         user_id=user_id,
-        product_id=product.id,
-        quantity=quantity,
-        total_price=total_price,
+        total_price=0,
         status="pending"
     )
 
     db.session.add(order)
+    db.session.flush()
+
+    for item in items:
+        product_id = item.get("id")
+        try:
+            quantity = int(item.get("quantity", 1))
+        except (TypeError, ValueError):
+            quantity = 1
+
+        if quantity < 1:
+            quantity = 1
+
+        product = Product.query.get(product_id)
+
+        if not product:
+            db.session.rollback()
+            return jsonify({
+                "error": f"Product {product_id} not found"
+            }), 404
+
+        line_total = product.price * quantity
+        total_price += line_total
+
+        order_item = OrderItem(
+            order_id=order.id,
+            product_id=product.id,
+            title=product.title,
+            price=product.price,
+            quantity=quantity
+        )
+
+        db.session.add(order_item)
+
+    order.total_price = total_price
+
     db.session.commit()
 
     return jsonify({
-        "message": "Order created",
-        "order_id": order.id
+        "message": "Order created successfully",
+        "order_id": order.id,
+        "total_price": total_price
     }), 201
+
+
+@orders_bp.route("", methods=["GET"])
+@jwt_required()
+def get_orders():
+    user_id = int(get_jwt_identity())
+
+    orders = (
+        Order.query
+        .filter_by(user_id=user_id)
+        .order_by(Order.created_at.desc())
+        .all()
+    )
+
+    result = []
+
+    for order in orders:
+        result.append({
+            "id": order.id,
+            "total_price": order.total_price,
+            "status": order.status,
+            "created_at": order.created_at.isoformat(),
+            "items": [
+                {
+                    "id": item.id,
+                    "product_id": item.product_id,
+                    "title": item.title,
+                    "price": item.price,
+                    "quantity": item.quantity
+                }
+                for item in order.items
+            ]
+        })
+
+    return jsonify(result), 200
