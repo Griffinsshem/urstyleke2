@@ -34,3 +34,8 @@ export const removeFromCart = (id) => {
 export const getCartCount = () => {
   return getCart().reduce((sum, item) => sum + item.quantity, 0);
 };
+
+export const clearCart = () => {
+  localStorage.removeItem("cart");
+  window.dispatchEvent(new Event("cart-updated"));
+};

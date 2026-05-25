@@ -47,3 +47,42 @@ export async function getOrders() {
 
   return res.json();
 }
+
+export async function getOrder(orderId) {
+  const token = getToken();
+
+  const res = await fetch(`${API_URL}/orders/${orderId}`, {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  });
+
+  if (!res.ok) {
+    throw new Error("Failed to fetch order");
+  }
+
+  return res.json();
+}
+
+
+export async function payOrder(orderId) {
+  const token = getToken();
+
+  const res = await fetch(
+    `${API_URL}/orders/${orderId}/pay`,
+    {
+      method: "PATCH",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    }
+  );
+
+  const data = await res.json();
+
+  if (!res.ok) {
+    throw new Error(data.error || "Payment failed");
+  }
+
+  return data;
+}
