@@ -61,5 +61,9 @@ def create_app():
     @app.route("/")
     def home():
         return {"message": "UrStyleKE API running 🚀"}
+    
+    @app.route("/cors-test")
+    def cors_test():
+        return {"status": "latest backend deployed"}
 
     return app
