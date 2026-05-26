@@ -1,16 +1,25 @@
 import os
 from pathlib import Path
+from datetime import timedelta
+
+import jwt
 from dotenv import load_dotenv
+from flask_jwt_extended import JWTManager
 
 load_dotenv(
     dotenv_path=Path(__file__).resolve().parent.parent / ".env"
 )
+
+jwt = JWTManager()
 
 
 class Config:
     SECRET_KEY = os.getenv("SECRET_KEY")
 
     JWT_SECRET_KEY = os.getenv("JWT_SECRET_KEY")
+
+    JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=15)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
 
     if not JWT_SECRET_KEY:
         raise RuntimeError(
