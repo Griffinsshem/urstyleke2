@@ -27,12 +27,12 @@ def serialize_product(p):
 # Get all products (Public)
 @products_bp.route("/", methods=["GET"])
 def get_products():
-
-    products = Product.query.all()
-
-    result = [serialize_product(p) for p in products]
-
-    return jsonify(result), 200
+    try:
+        products = Product.query.all()
+        return jsonify([serialize_product(p) for p in products]), 200
+    except Exception as e:
+        print("PRODUCTS ERROR:", str(e))
+        return {"error": str(e)}, 500
 
 
 # Get single product
