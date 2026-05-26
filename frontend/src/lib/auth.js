@@ -1,4 +1,5 @@
-const API_URL = "http://127.0.0.1:5000/api";
+const API_URL =
+  process.env.NEXT_PUBLIC_API_URL;
 
 const TOKEN_KEY = "urstyleke_token";
 const USER_KEY = "urstyleke_user";

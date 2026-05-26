@@ -104,3 +104,13 @@ def delete_product(product_id):
     db.session.commit()
 
     return {"message": "Product deleted"}, 200
+
+
+@products_bp.route("", methods=["GET"])
+def get_products():
+    try:
+        products = Product.query.all()
+        return jsonify([serialize_product(p) for p in products]), 200
+    except Exception as e:
+        print("PRODUCTS ERROR:", str(e))
+        return {"error": str(e)}, 500
