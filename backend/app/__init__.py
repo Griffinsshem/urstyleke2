@@ -13,7 +13,6 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
-    # Enable CORS for frontend (Next.js)
     CORS(
         app,
         resources={r"/api/*": {"origins": ["http://localhost:3000", "https://urstyleke.vercel.app"]}},
