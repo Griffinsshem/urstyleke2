@@ -2,7 +2,7 @@ const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
 function getToken() {
   if (typeof window === "undefined") return null;
-  return localStorage.getItem("urstyleke_token");
+  return localStorage.getItem("urstyleke_access_token");
 }
 
 export async function getProducts() {
