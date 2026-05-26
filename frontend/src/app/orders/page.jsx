@@ -99,7 +99,7 @@ export default function OrdersPage() {
 
                   <div>
                     <h2 className="text-xl font-bold">
-                      Order #{order.id}
+                      Order .{order.id}
                     </h2>
 
                     <p className="text-white/40 text-sm mt-1">
