@@ -47,8 +47,8 @@ def login():
     if not user or not check_password_hash(user.password, password):
         return jsonify({"error": "Invalid credentials"}), 401
 
-    access_token = create_access_token(identity=user.id)
-    refresh_token = create_refresh_token(identity=user.id)
+    access_token = create_access_token(identity=str(user.id))
+    refresh_token = create_refresh_token(identity=str(user.id))
 
     return jsonify({
         "access_token": access_token,
@@ -60,7 +60,7 @@ def login():
 @auth_bp.route("/me", methods=["GET"])
 @jwt_required()
 def me():
-    user_id = get_jwt_identity()
+    user_id = int(get_jwt_identity())
 
     user = User.query.get(user_id)
 
@@ -99,7 +99,7 @@ def update_profile():
 def refresh():
     user_id = get_jwt_identity()
 
-    new_token = create_access_token(identity=user_id)
+    new_token = create_access_token(identity=str(user_id))
 
     return jsonify({
         "access_token": new_token
