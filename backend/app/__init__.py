@@ -15,15 +15,7 @@ def create_app():
 
     CORS(
         app,
-        resources= {
-            r"/api/*": {
-                "origins": [
-                    "http://localhost:3000",
-                    "https://urstyleke2.vercel.app/",
-                ]
-            }
-        },
-        supports_credentials=True,
+        resources={r"/api/*": {"origins": "*"}},
         allow_headers=["Content-Type", "Authorization"],
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     )
@@ -62,8 +54,8 @@ def create_app():
     def home():
         return {"message": "UrStyleKE API running 🚀"}
     
-    @app.route("/cors-test")
-    def cors_test():
-        return {"status": "latest backend deployed"}
+    # @app.route("/cors-test")
+    # def cors_test():
+    #     return {"status": "latest backend deployed"}
 
     return app
