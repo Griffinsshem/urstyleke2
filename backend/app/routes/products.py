@@ -25,7 +25,6 @@ def serialize_product(p):
 
 
 # Get all products (Public)
-@products_bp.route("", methods=["GET"])
 @products_bp.route("/", methods=["GET"])
 def get_products():
 
@@ -105,12 +104,3 @@ def delete_product(product_id):
 
     return {"message": "Product deleted"}, 200
 
-
-@products_bp.route("", methods=["GET"])
-def get_products():
-    try:
-        products = Product.query.all()
-        return jsonify([serialize_product(p) for p in products]), 200
-    except Exception as e:
-        print("PRODUCTS ERROR:", str(e))
-        return {"error": str(e)}, 500
