@@ -15,10 +15,17 @@ def create_app():
 
     CORS(
         app,
-        resources={r"/api/*": {"origins": ["http://localhost:3000", "https://urstyleke.vercel.app"]}},
+        resources= {
+            r"/api/*": {
+                "origins": [
+                    "http://localhost:3000",
+                    "https://urstyleke2.vercel.app/",
+                ]
+            }
+        },
         supports_credentials=True,
         allow_headers=["Content-Type", "Authorization"],
-        methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
+        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     )
 
     # Init extensions
