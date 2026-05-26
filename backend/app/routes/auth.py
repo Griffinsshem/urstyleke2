@@ -47,7 +47,7 @@ def login():
     if not user or not check_password_hash(user.password, password):
         return jsonify({"error": "Invalid credentials"}), 401
 
-    token = create_access_token(identity=str(user.id))
+    token = create_access_token(identity=user.id)
 
     return jsonify({
         "access_token": token,
@@ -58,12 +58,12 @@ def login():
 @auth_bp.route("/me", methods=["GET"])
 @jwt_required()
 def me():
-    user_id = int(get_jwt_identity())
+    user_id = get_jwt_identity()
 
     user = User.query.get(user_id)
 
     if not user:
-        return {"error": "User not found"}, 404
+        return jsonify({"error": "User not found"}), 404
 
     return {
         "id": user.id,
