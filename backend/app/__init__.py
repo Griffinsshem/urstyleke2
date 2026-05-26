@@ -16,7 +16,7 @@ def create_app():
     # Enable CORS for frontend (Next.js)
     CORS(
         app,
-        resources={r"/api/*": {"origins": ["http://localhost:3000"]}},
+        resources={r"/api/*": {"origins": ["http://localhost:3000", "https://urstyleke.vercel.app"]}},
         supports_credentials=True,
         allow_headers=["Content-Type", "Authorization"],
         methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]

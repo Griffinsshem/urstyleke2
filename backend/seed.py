@@ -6,7 +6,7 @@ app = create_app()
 
 with app.app_context():
 
-    Product.query.delete()
+    db.session.query(Product).delete()
 
     products = [
         Product(
