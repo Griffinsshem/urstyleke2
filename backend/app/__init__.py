@@ -15,12 +15,11 @@ def create_app():
 
     CORS(
         app,
-        resources={r"/api/*": {"origins": "*"}},
+        resources={r"/api/*": {"origins": ["http://localhost:3000", "https://urstyleke2.vercel.app"]}},
         allow_headers=["Content-Type", "Authorization"],
         methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
     )
 
-    # Init extensions
     db.init_app(app)
     migrate.init_app(app, db)
     jwt.init_app(app)
