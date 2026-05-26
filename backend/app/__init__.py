@@ -17,7 +17,7 @@ def create_app():
         app,
         resources={r"/api/*": {"origins": ["http://localhost:3000", "https://urstyleke2.vercel.app"]}},
         allow_headers=["Content-Type", "Authorization"],
-        methods=["GET", "POST", "PUT", "DELETE", "OPTIONS"]
+        methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
     )
 
     db.init_app(app)
