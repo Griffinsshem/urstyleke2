@@ -1,7 +1,12 @@
 "use client";
 
 import { createContext, useContext, useEffect, useState } from "react";
-import { fetchMe, getUser, isAuthenticated, signOut } from "@/lib/auth";
+import {
+  fetchMe,
+  getUser,
+  isAuthenticated,
+  signOut,
+} from "@/lib/auth";
 
 const AuthContext = createContext();
 
@@ -24,7 +29,6 @@ export const AuthProvider = ({ children }) => {
 
       const freshUser = await fetchMe();
       setUser(freshUser);
-
     } catch (err) {
       console.warn("Session expired");
       signOut();
