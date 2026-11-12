@@ -1,5 +1,5 @@
 from flask import Blueprint, request, jsonify
-from flask_jwt_extended import jwt_required
+from ..utils.auth import admin_required
 
 from ..extensions import db
 from ..models.product import Product
@@ -47,7 +47,7 @@ def get_product(product_id):
 # Create product (Protected)
 @products_bp.route("", methods=["POST"])
 @products_bp.route("/", methods=["POST"])
-@jwt_required()
+@admin_required
 def create_product():
 
     data = request.get_json()
@@ -75,7 +75,7 @@ def create_product():
 
 # Update product
 @products_bp.route("/<int:product_id>", methods=["PUT"])
-@jwt_required()
+@admin_required
 def update_product(product_id):
 
     product = Product.query.get_or_404(product_id)
@@ -94,7 +94,7 @@ def update_product(product_id):
 
 # Delete product
 @products_bp.route("/<int:product_id>", methods=["DELETE"])
-@jwt_required()
+@admin_required
 def delete_product(product_id):
 
     product = Product.query.get_or_404(product_id)
