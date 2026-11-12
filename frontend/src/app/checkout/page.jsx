@@ -358,7 +358,7 @@ export default function CheckoutPage() {
                     focus-visible:ring-offset-[#080808]
                   "
                 >
-                  {loading ? "Processing..." : "Proceed to Payment"}
+                  {loading ? "Processing..." : "Place order"}
                   <FiArrowRight size={14} className="btn-arrow" aria-hidden />
                 </button>
 
