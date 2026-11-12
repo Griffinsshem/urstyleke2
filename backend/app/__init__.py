@@ -4,6 +4,8 @@ from flask_cors import CORS
 
 from .config import Config
 from .extensions import db, migrate
+from .errors import register_error_handlers, register_jwt_error_handlers
+from .observability import configure_logging, init_request_logging
 
 
 jwt = JWTManager()
@@ -12,6 +14,9 @@ jwt = JWTManager()
 def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
+
+    configure_logging(app)
+    init_request_logging(app)
 
     CORS(
         app,
@@ -24,15 +29,8 @@ def create_app():
     migrate.init_app(app, db)
     jwt.init_app(app)
 
-    @jwt.invalid_token_loader
-    def invalid_token_callback(error):
-        print("JWT INVALID:", error)
-        return {"error": error}, 422
-    
-    @jwt.unauthorized_loader
-    def missing_token_callback(error):
-        print("JWT MISSING:", error)
-        return {"error": error}, 401
+    register_jwt_error_handlers(jwt)
+    register_error_handlers(app)
 
 
     from app.models.user import User

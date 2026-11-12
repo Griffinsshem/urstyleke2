@@ -1,8 +1,8 @@
 from functools import wraps
 
-from flask import jsonify
 from flask_jwt_extended import get_jwt_identity, verify_jwt_in_request
 
+from app.errors import error_response
 from app.extensions import db
 from app.models.user import User
 
@@ -24,13 +24,13 @@ def admin_required(fn):
         try:
             user_id = int(get_jwt_identity())
         except (TypeError, ValueError):
-            return jsonify({"error": "Authentication required"}), 401
+            return error_response("Authentication required", 401, "authentication_required")
 
         user = db.session.get(User, user_id)
         if user is None:
-            return jsonify({"error": "Authentication required"}), 401
+            return error_response("Authentication required", 401, "authentication_required")
         if not user.is_admin:
-            return jsonify({"error": "Administrator access required"}), 403
+            return error_response("Administrator access required", 403, "admin_required")
 
         return fn(*args, **kwargs)
 
