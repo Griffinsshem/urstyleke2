@@ -10,3 +10,6 @@ instance/
 migrations/__pycache__/
 
 .DS_Store
+
+# Safe templates may be committed
+!.env.example
