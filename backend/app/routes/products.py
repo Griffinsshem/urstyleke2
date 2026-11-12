@@ -1,4 +1,5 @@
 from flask import Blueprint, request, jsonify
+from ..errors import error_response
 from ..utils.auth import admin_required
 
 from ..extensions import db
@@ -27,12 +28,8 @@ def serialize_product(p):
 # Get all products (Public)
 @products_bp.route("/", methods=["GET"])
 def get_products():
-    try:
-        products = Product.query.all()
-        return jsonify([serialize_product(p) for p in products]), 200
-    except Exception as e:
-        print("PRODUCTS ERROR:", str(e))
-        return {"error": str(e)}, 500
+    products = Product.query.all()
+    return jsonify([serialize_product(p) for p in products]), 200
 
 
 # Get single product
@@ -50,7 +47,9 @@ def get_product(product_id):
 @admin_required
 def create_product():
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return error_response("Request body must be a JSON object", 400, "invalid_json")
 
     title = data.get("title")
     price = data.get("price")
@@ -58,7 +57,7 @@ def create_product():
     image = data.get("image") or "/images/placeholder.jpg"
 
     if not title or not price:
-        return {"error": "Title and price are required"}, 400
+        return error_response("Title and price are required", 400, "validation_error")
 
     product = Product(
         title=title,
@@ -80,7 +79,9 @@ def update_product(product_id):
 
     product = Product.query.get_or_404(product_id)
 
-    data = request.get_json()
+    data = request.get_json(silent=True)
+    if not isinstance(data, dict):
+        return error_response("Request body must be a JSON object", 400, "invalid_json")
 
     product.title = data.get("title", product.title)
     product.price = data.get("price", product.price)
