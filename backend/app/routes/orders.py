@@ -145,35 +145,3 @@ def get_order(order_id):
             for item in order.items
         ]
     }), 200
-
-
-@orders_bp.route("/<int:order_id>/pay", methods=["PATCH"])
-@jwt_required()
-def pay_order(order_id):
-    user_id = int(get_jwt_identity())
-
-    order = Order.query.filter_by(
-        id=order_id,
-        user_id=user_id
-    ).first()
-
-    if not order:
-        return jsonify({
-            "error": "Order not found"
-        }), 404
-
-    if order.status == "paid":
-        return jsonify({
-            "error": "Order already paid"
-        }), 400
-
-    order.status = "paid"
-
-    db.session.commit()
-
-    return jsonify({
-        "message": "Payment successful",
-        "order_id": order.id,
-        "status": order.status
-    }), 200
-
