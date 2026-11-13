@@ -1,9 +1,10 @@
-from flask import Blueprint, request, jsonify
-from ..errors import error_response
-from ..utils.auth import admin_required
+from flask import Blueprint, jsonify
 
 from ..extensions import db
 from ..models.product import Product
+from ..schemas import ProductCreateRequest, ProductUpdateRequest
+from ..utils.auth import admin_required
+from ..validation import parse_body
 
 
 products_bp = Blueprint(
@@ -11,6 +12,8 @@ products_bp = Blueprint(
     __name__,
     url_prefix="/api/products"
 )
+
+PLACEHOLDER_IMAGE = "/images/placeholder.jpg"
 
 
 # Helper: serialize product
@@ -41,29 +44,18 @@ def get_product(product_id):
     return jsonify(serialize_product(product)), 200
 
 
-# Create product (Protected)
+# Create product (Admin only)
 @products_bp.route("", methods=["POST"])
 @products_bp.route("/", methods=["POST"])
 @admin_required
 def create_product():
-
-    data = request.get_json(silent=True)
-    if not isinstance(data, dict):
-        return error_response("Request body must be a JSON object", 400, "invalid_json")
-
-    title = data.get("title")
-    price = data.get("price")
-    category = data.get("category")
-    image = data.get("image") or "/images/placeholder.jpg"
-
-    if not title or not price:
-        return error_response("Title and price are required", 400, "validation_error")
+    body = parse_body(ProductCreateRequest)
 
     product = Product(
-        title=title,
-        price=price,
-        category=category,
-        image=image
+        title=body.title,
+        price=body.price,
+        category=body.category,
+        image=body.image or PLACEHOLDER_IMAGE,
     )
 
     db.session.add(product)
@@ -72,28 +64,26 @@ def create_product():
     return jsonify(serialize_product(product)), 201
 
 
-# Update product
+# Update product (Admin only)
 @products_bp.route("/<int:product_id>", methods=["PUT"])
 @admin_required
 def update_product(product_id):
 
     product = Product.query.get_or_404(product_id)
 
-    data = request.get_json(silent=True)
-    if not isinstance(data, dict):
-        return error_response("Request body must be a JSON object", 400, "invalid_json")
+    body = parse_body(ProductUpdateRequest)
 
-    product.title = data.get("title", product.title)
-    product.price = data.get("price", product.price)
-    product.image = data.get("image", product.image)
-    product.category = data.get("category", product.category)
+    # Only the four schema fields can ever be set; explicit nulls mean "leave unchanged".
+    for field, value in body.model_dump(exclude_unset=True).items():
+        if value is not None:
+            setattr(product, field, value)
 
     db.session.commit()
 
     return jsonify(serialize_product(product)), 200
 
 
-# Delete product
+# Delete product (Admin only)
 @products_bp.route("/<int:product_id>", methods=["DELETE"])
 @admin_required
 def delete_product(product_id):
@@ -104,4 +94,3 @@ def delete_product(product_id):
     db.session.commit()
 
     return {"message": "Product deleted"}, 200
-

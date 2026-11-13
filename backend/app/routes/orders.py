@@ -1,10 +1,13 @@
-from flask import Blueprint, request, jsonify
+from flask import Blueprint, jsonify
 from flask_jwt_extended import jwt_required, get_jwt_identity
 
+from app.errors import error_response
 from app.extensions import db
 from app.models.order import Order
 from app.models.product import Product
 from app.models.order_item import OrderItem
+from app.schemas import OrderCreateRequest
+from app.validation import parse_body
 
 
 orders_bp = Blueprint(
@@ -19,12 +22,7 @@ orders_bp = Blueprint(
 def create_order():
     user_id = int(get_jwt_identity())
 
-    data = request.get_json()
-
-    items = data.get("items", [])
-
-    if not items:
-        return jsonify({"error": "Cart is empty"}), 400
+    body = parse_body(OrderCreateRequest)
 
     total_price = 0
 
@@ -37,25 +35,14 @@ def create_order():
     db.session.add(order)
     db.session.flush()
 
-    for item in items:
-        product_id = item.get("id")
-        try:
-            quantity = int(item.get("quantity", 1))
-        except (TypeError, ValueError):
-            quantity = 1
-
-        if quantity < 1:
-            quantity = 1
-
-        product = Product.query.get(product_id)
+    for item in body.items:
+        product = db.session.get(Product, item.id)
 
         if not product:
             db.session.rollback()
-            return jsonify({
-                "error": f"Product {product_id} not found"
-            }), 404
+            return error_response(f"Product {item.id} not found", 404, "product_not_found")
 
-        line_total = product.price * quantity
+        line_total = product.price * item.quantity
         total_price += line_total
 
         order_item = OrderItem(
@@ -63,7 +50,7 @@ def create_order():
             product_id=product.id,
             title=product.title,
             price=product.price,
-            quantity=quantity
+            quantity=item.quantity
         )
 
         db.session.add(order_item)
@@ -125,9 +112,7 @@ def get_order(order_id):
     ).first()
 
     if not order:
-        return jsonify({
-            "error": "Order not found"
-        }), 404
+        return error_response("Order not found", 404, "order_not_found")
 
     return jsonify({
         "id": order.id,

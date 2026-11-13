@@ -32,7 +32,10 @@ export default function ProfilePage() {
 
       const data = await res.json();
 
-      if (!res.ok) throw new Error(data.error);
+      if (!res.ok) {
+        setMsg(data.code === "validation_error" ? data.error : "Update failed. Try again.");
+        return;
+      }
 
       setMsg("Profile updated successfully ");
       setPassword("");

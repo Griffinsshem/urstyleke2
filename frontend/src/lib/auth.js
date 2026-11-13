@@ -53,7 +53,11 @@ export const registerUser = async ({ name, email, password }) => {
 
   const data = await res.json();
 
-  if (!res.ok) throw new Error(data.error || "Registration failed");
+  if (!res.ok) {
+    const err = new Error(data.error || "Registration failed");
+    err.code = data.code;
+    throw err;
+  }
 
   return data;
 };

@@ -11,7 +11,7 @@ import {
 const MAX_NAME_LEN   = 100;
 const MAX_EMAIL_LEN  = 254;  
 const MAX_PASSWD_LEN = 128;
-const MIN_PASSWD_LEN = 8;
+const MIN_PASSWD_LEN = 10;
 const MAX_ATTEMPTS   = 3;
 const LOCKOUT_MS     = 60_000;
 
@@ -36,7 +36,10 @@ function getPasswordStrength(pw) {
 
 const safeErrorMessage = (err) => {
   const msg = (err?.message ?? "").toLowerCase();
-  if (msg.includes("email already")) return "An account with this email already exists.";
+  if (err?.code === "validation_error") return err.message;
+  if (err?.code === "email_taken" || msg.includes("already exists")) {
+    return "An account with this email already exists.";
+  }
   if (msg.includes("network") || msg.includes("fetch")) return "Network error. Please check your connection.";
   return "Registration failed. Please try again.";
 };
