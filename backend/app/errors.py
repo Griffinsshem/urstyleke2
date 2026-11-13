@@ -37,8 +37,21 @@ _CODES = {
 }
 
 
-def error_response(message, status, code=None):
+class ApiError(Exception):
+    """Raise anywhere in a request to answer with the standard error format."""
+
+    def __init__(self, message, status=400, code=None, fields=None):
+        super().__init__(message)
+        self.message = message
+        self.status = status
+        self.code = code
+        self.fields = fields
+
+
+def error_response(message, status, code=None, extra=None):
     body = {"error": message, "code": code or _CODES.get(status, "error")}
+    if extra:
+        body.update(extra)
     request_id = getattr(g, "request_id", None)
     if request_id:
         body["request_id"] = request_id
@@ -56,6 +69,11 @@ def register_error_handlers(app):
         if status >= 500:
             log.error("http error %s", status, exc_info=exc)
         return response, status
+
+    @app.errorhandler(ApiError)
+    def handle_api_error(exc):
+        extra = {"fields": exc.fields} if exc.fields else None
+        return error_response(exc.message, exc.status, exc.code, extra=extra)
 
     @app.errorhandler(Exception)
     def handle_unexpected_exception(exc):
