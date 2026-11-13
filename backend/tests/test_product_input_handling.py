@@ -37,7 +37,7 @@ def test_create_with_bad_body_is_400_and_creates_nothing(client, app, admin_head
 
 def test_create_without_title_is_a_validation_error(client, app, admin_headers):
     r = client.post("/api/products/", json={"price": 100}, headers=admin_headers)
-    assert r.status_code == 400
+    assert r.status_code == 422
     assert r.get_json()["code"] == "validation_error"
     assert product_count(app) == 0
 
