@@ -13,6 +13,11 @@ const MAX_EMAIL_LEN  = 254;
 const MAX_PASSWD_LEN = 128;  
 
 const safeErrorMessage = (err) => {
+  if (err?.code === "rate_limited") {
+    const secs = Number(err.retryAfter) || 60;
+    const wait = secs >= 120 ? `${Math.ceil(secs / 60)} minutes` : `${secs} seconds`;
+    return `Too many attempts. Please try again in ${wait}.`;
+  }
   const known = [
     "invalid credentials",
     "too many requests",

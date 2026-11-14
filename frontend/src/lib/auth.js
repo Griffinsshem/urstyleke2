@@ -56,6 +56,7 @@ export const registerUser = async ({ name, email, password }) => {
   if (!res.ok) {
     const err = new Error(data.error || "Registration failed");
     err.code = data.code;
+    err.retryAfter = data.retry_after;
     throw err;
   }
 
@@ -71,7 +72,12 @@ export const loginUser = async ({ email, password }) => {
 
   const data = await res.json();
 
-  if (!res.ok) throw new Error(data.error || "Login failed");
+  if (!res.ok) {
+    const err = new Error(data.error || "Login failed");
+    err.code = data.code;
+    err.retryAfter = data.retry_after;
+    throw err;
+  }
 
   const user = {
     id: data.user_id,

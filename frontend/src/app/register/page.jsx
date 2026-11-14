@@ -35,6 +35,11 @@ function getPasswordStrength(pw) {
 }
 
 const safeErrorMessage = (err) => {
+  if (err?.code === "rate_limited") {
+    const secs = Number(err.retryAfter) || 60;
+    const wait = secs >= 120 ? `${Math.ceil(secs / 60)} minutes` : `${secs} seconds`;
+    return `Too many attempts. Please try again in ${wait}.`;
+  }
   const msg = (err?.message ?? "").toLowerCase();
   if (err?.code === "validation_error") return err.message;
   if (err?.code === "email_taken" || msg.includes("already exists")) {
