@@ -7,6 +7,7 @@ from .extensions import db, migrate
 from .errors import register_error_handlers, register_jwt_error_handlers
 from .observability import configure_logging, init_request_logging
 from .proxy import apply_proxy_fix
+from .ratelimit import init_rate_limiting
 
 
 jwt = JWTManager()
@@ -24,6 +25,7 @@ def create_app():
         app,
         resources={r"/api/*": {"origins": ["http://localhost:3000", "https://urstyleke2.vercel.app"]}},
         allow_headers=["Content-Type", "Authorization"],
+        expose_headers=["Retry-After", "X-Request-ID"],
         methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
     )
 
@@ -33,6 +35,7 @@ def create_app():
 
     register_jwt_error_handlers(jwt)
     register_error_handlers(app)
+    init_rate_limiting(app)
 
 
     from app.models.user import User

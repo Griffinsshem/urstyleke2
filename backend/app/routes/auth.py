@@ -12,6 +12,16 @@ from ..errors import ApiError, error_response
 from ..extensions import db
 from ..models.user import User
 from ..schemas import LoginRequest, ProfileUpdateRequest, RegisterRequest, check_password
+from ..ratelimit import (
+    clear_login_failures,
+    limiter,
+    login_ip_limit,
+    login_is_blocked,
+    login_retry_after,
+    rate_limited_response,
+    record_login_failure,
+    register_ip_limit,
+)
 from ..validation import parse_body
 
 
@@ -28,6 +38,7 @@ def _find_user_by_email(email):
 
 # Register
 @auth_bp.route("/register", methods=["POST"])
+@limiter.limit(register_ip_limit, methods=["POST"])
 def register():
     body = parse_body(RegisterRequest)
 
@@ -47,14 +58,21 @@ def register():
 
 # Login
 @auth_bp.route("/login", methods=["POST"])
+@limiter.limit(login_ip_limit, methods=["POST"])
 def login():
     body = parse_body(LoginRequest)
+
+    if login_is_blocked(body.email):
+        return rate_limited_response(login_retry_after(body.email))
 
     user = _find_user_by_email(body.email)
     password_ok = check_password_hash(user.password if user else _DUMMY_HASH, body.password)
 
     if not user or not password_ok:
+        record_login_failure(body.email)
         return error_response("Invalid credentials", 401, "invalid_credentials")
+
+    clear_login_failures(body.email)
 
     access_token = create_access_token(identity=str(user.id))
     refresh_token = create_refresh_token(identity=str(user.id))

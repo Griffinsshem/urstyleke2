@@ -6,6 +6,7 @@ from app.extensions import db
 from app.models.order import Order
 from app.models.product import Product
 from app.models.order_item import OrderItem
+from app.ratelimit import limiter, orders_user_limit, user_or_ip_key
 from app.schemas import OrderCreateRequest
 from app.validation import parse_body
 
@@ -19,6 +20,7 @@ orders_bp = Blueprint(
 
 @orders_bp.route("", methods=["POST"])
 @jwt_required()
+@limiter.limit(orders_user_limit, key_func=user_or_ip_key, methods=["POST"])
 def create_order():
     user_id = int(get_jwt_identity())
 

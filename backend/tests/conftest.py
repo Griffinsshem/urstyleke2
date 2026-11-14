@@ -36,6 +36,8 @@ if _dev_url and _host(_dev_url) == _host(_test_url):
 
 # Must happen BEFORE the app (and app.config) is imported.
 os.environ["DATABASE_URL"] = _test_url
+# Rate limits are off for the normal run; test_rate_limiting.py switches them on.
+os.environ.setdefault("RATELIMIT_ENABLED", "false")
 
 from flask_migrate import upgrade  # noqa: E402
 from sqlalchemy import text  # noqa: E402
