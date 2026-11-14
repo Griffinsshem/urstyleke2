@@ -6,6 +6,7 @@ from .config import Config
 from .extensions import db, migrate
 from .errors import register_error_handlers, register_jwt_error_handlers
 from .observability import configure_logging, init_request_logging
+from .proxy import apply_proxy_fix
 
 
 jwt = JWTManager()
@@ -15,6 +16,7 @@ def create_app():
     app = Flask(__name__)
     app.config.from_object(Config)
 
+    apply_proxy_fix(app)
     configure_logging(app)
     init_request_logging(app)
 

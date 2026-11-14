@@ -47,6 +47,12 @@ def configure_logging(app):
         logger.addHandler(handler)
 
 
+def _xff_hops():
+    """How many entries X-Forwarded-For has. A count only; addresses are never logged."""
+    header = request.headers.get("X-Forwarded-For", "")
+    return len([part for part in header.split(",") if part.strip()])
+
+
 def init_request_logging(app):
     log = logging.getLogger("app.request")
 
@@ -73,6 +79,8 @@ def init_request_logging(app):
                 "path": request.path,
                 "status": response.status_code,
                 "duration_ms": duration,
+                "xff_hops": _xff_hops(),
+                "trusted_hops": app.config.get("TRUSTED_PROXY_HOPS", 0),
             },
         )
         return response
