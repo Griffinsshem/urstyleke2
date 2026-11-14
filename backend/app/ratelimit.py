@@ -33,7 +33,9 @@ DEFAULTS = {
     "RATELIMIT_LOGIN_FAILS": "8 per 15 minutes",
 }
 
-limiter = Limiter(key_func=get_remote_address, storage_uri="memory://", headers_enabled=True)
+# headers_enabled=False: the library would add Retry-After to every response from a
+# limited route (even a 401). We send Retry-After ourselves, only on 429s.
+limiter = Limiter(key_func=get_remote_address, storage_uri="memory://", headers_enabled=False)
 
 _storage = MemoryStorage()
 _strategy = FixedWindowRateLimiter(_storage)

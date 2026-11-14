@@ -38,14 +38,16 @@ def token_for(app, user_id):
 def test_login_ip_limit_returns_a_standard_429(client, limits_on, monkeypatch):
     monkeypatch.setitem(limits_on.config, "RATELIMIT_LOGIN_IP", "3 per minute")
     for _ in range(3):
-        assert post_login(client, "nobody@example.com", GOOD_PW).status_code == 401
+        ok = post_login(client, "nobody@example.com", GOOD_PW)
+        assert ok.status_code == 401
+        assert "Retry-After" not in ok.headers
     r = post_login(client, "nobody@example.com", GOOD_PW)
     body = r.get_json()
     assert r.status_code == 429
     assert body["code"] == "rate_limited"
     assert isinstance(body["error"], str) and body["request_id"]
     assert 1 <= body["retry_after"] <= 3600
-    assert 1 <= int(r.headers["Retry-After"]) <= 3600
+    assert int(r.headers["Retry-After"]) == body["retry_after"]
     assert client.get("/api/products/").status_code == 200
 
 
