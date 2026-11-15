@@ -37,6 +37,15 @@ export const setSession = (accessToken, refreshToken, user) => {
 };
 
 export const signOut = () => {
+  const refreshToken = localStorage.getItem(REFRESH_KEY);
+  if (refreshToken) {
+    // Best effort: revoke the session on the server. Signing out locally never waits for it.
+    fetch(`${API_URL}/auth/logout`, {
+      method: "POST",
+      headers: { Authorization: `Bearer ${refreshToken}` },
+      keepalive: true,
+    }).catch(() => {});
+  }
   localStorage.removeItem(ACCESS_KEY);
   localStorage.removeItem(REFRESH_KEY);
   localStorage.removeItem(USER_KEY);
@@ -109,6 +118,7 @@ export const refreshAccessToken = async () => {
   }
 
   localStorage.setItem(ACCESS_KEY, data.access_token);
+  if (data.refresh_token) localStorage.setItem(REFRESH_KEY, data.refresh_token);
 
   return data.access_token;
 };
