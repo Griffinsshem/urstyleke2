@@ -14,4 +14,13 @@ def test_migrations_applied_and_tables_empty(app):
         version = db.session.execute(
             text("SELECT version_num FROM alembic_version")
         ).scalar()
-        assert version == "a1f3c9d27b40"
+        from pathlib import Path as _Path
+        from alembic.config import Config
+        from alembic.script import ScriptDirectory
+
+        cfg = Config()
+        cfg.set_main_option(
+            "script_location",
+            str(_Path(__file__).resolve().parent.parent / "migrations"),
+        )
+        assert version == ScriptDirectory.from_config(cfg).get_current_head()

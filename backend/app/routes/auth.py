@@ -1,7 +1,7 @@
 from flask import Blueprint, jsonify
 from flask_jwt_extended import (
     create_access_token,
-    create_refresh_token,
+    get_jwt,
     get_jwt_identity,
     jwt_required,
 )
@@ -19,9 +19,11 @@ from ..ratelimit import (
     login_is_blocked,
     login_retry_after,
     rate_limited_response,
+    refresh_ip_limit,
     record_login_failure,
     register_ip_limit,
 )
+from ..sessions import purge_expired_sessions, revoke_session, rotate_refresh_token, start_session
 from ..validation import parse_body
 
 
@@ -75,7 +77,9 @@ def login():
     clear_login_failures(body.email)
 
     access_token = create_access_token(identity=str(user.id))
-    refresh_token = create_refresh_token(identity=str(user.id))
+    purge_expired_sessions()
+    refresh_token = start_session(user.id)
+    db.session.commit()
 
     return jsonify({
         "access_token": access_token,
@@ -119,8 +123,22 @@ def update_profile():
 
 
 @auth_bp.route("/refresh", methods=["POST"])
+@limiter.limit(refresh_ip_limit, methods=["POST"])
 @jwt_required(refresh=True)
 def refresh():
-    user_id = get_jwt_identity()
+    new_refresh_token, user_id = rotate_refresh_token(get_jwt()["jti"])
 
-    return jsonify({"access_token": create_access_token(identity=str(user_id))}), 200
+    return jsonify({
+        "access_token": create_access_token(identity=str(user_id)),
+        "refresh_token": new_refresh_token,
+    }), 200
+
+
+# Logout: revoke the whole session (every refresh token of this login)
+@auth_bp.route("/logout", methods=["POST"])
+@limiter.limit(refresh_ip_limit, methods=["POST"])
+@jwt_required(refresh=True)
+def logout():
+    revoke_session(get_jwt()["jti"])
+
+    return jsonify({"message": "Logged out"}), 200

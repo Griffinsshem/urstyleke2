@@ -30,6 +30,7 @@ DEFAULTS = {
     "RATELIMIT_LOGIN_IP": "20 per minute;100 per hour",
     "RATELIMIT_REGISTER_IP": "10 per hour",
     "RATELIMIT_ORDERS_USER": "30 per minute",
+    "RATELIMIT_REFRESH_IP": "60 per minute;600 per hour",
     "RATELIMIT_LOGIN_FAILS": "8 per 15 minutes",
 }
 
@@ -61,6 +62,10 @@ def register_ip_limit():
 
 def orders_user_limit():
     return _config("RATELIMIT_ORDERS_USER")
+
+
+def refresh_ip_limit():
+    return _config("RATELIMIT_REFRESH_IP")
 
 
 def user_or_ip_key():

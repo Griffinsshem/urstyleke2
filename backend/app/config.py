@@ -58,7 +58,7 @@ class Config:
     JWT_SECRET_KEY = _require_secret("JWT_SECRET_KEY")
 
     JWT_ACCESS_TOKEN_EXPIRES = timedelta(minutes=15)
-    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=30)
+    JWT_REFRESH_TOKEN_EXPIRES = timedelta(days=7)
 
     SQLALCHEMY_DATABASE_URI = _require_database_url()
     SQLALCHEMY_TRACK_MODIFICATIONS = False
