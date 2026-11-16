@@ -37,6 +37,9 @@ def create_app():
     register_error_handlers(app)
     init_rate_limiting(app)
 
+    from app.auth_cookies import init_auth_cookies
+    init_auth_cookies(app)
+
 
     from app.models.user import User
     from app.models.product import Product
