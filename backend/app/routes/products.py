@@ -29,6 +29,7 @@ def serialize_product(p):
 
 
 # Get all products (Public)
+@products_bp.route("", methods=["GET"])
 @products_bp.route("/", methods=["GET"])
 def get_products():
     products = Product.query.all()
