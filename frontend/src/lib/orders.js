@@ -1,24 +1,12 @@
-const API_URL =
-  process.env.NEXT_PUBLIC_API_URL;
-
-function getToken() {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("urstyleke_access_token");
-}
+import { authFetch, isAuthenticated } from "@/lib/auth";
 
 export async function createOrder(items) {
-  const token = getToken();
-
-  if (!token) {
+  if (!isAuthenticated()) {
     throw new Error("User not authenticated");
   }
 
-  const res = await fetch(`${API_URL}/orders`, {
+  const res = await authFetch("/orders", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify({ items }),
   });
 
@@ -32,13 +20,7 @@ export async function createOrder(items) {
 }
 
 export async function getOrders() {
-  const token = getToken();
-
-  const res = await fetch(`${API_URL}/orders`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await authFetch("/orders");
 
   if (!res.ok) {
     throw new Error("Failed to fetch orders");
@@ -48,13 +30,7 @@ export async function getOrders() {
 }
 
 export async function getOrder(orderId) {
-  const token = getToken();
-
-  const res = await fetch(`${API_URL}/orders/${orderId}`, {
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
-  });
+  const res = await authFetch(`/orders/${orderId}`);
 
   if (!res.ok) {
     throw new Error("Failed to fetch order");

@@ -1,13 +1,9 @@
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-function getToken() {
-  if (typeof window === "undefined") return null;
-  return localStorage.getItem("urstyleke_access_token");
-}
+import { API_URL } from "@/lib/api";
+import { authFetch } from "@/lib/auth";
 
 export async function getProducts() {
   try {
-    const res = await fetch(`${API_URL}/products/`);
+    const res = await fetch(`${API_URL}/products`);
 
     if (!res.ok) {
       throw new Error("Failed to fetch products");
@@ -19,7 +15,6 @@ export async function getProducts() {
     return [];
   }
 }
-
 
 export async function getProduct(id) {
   const res = await fetch(`${API_URL}/products/${id}`);
@@ -35,14 +30,8 @@ export async function getProduct(id) {
  * Create product (Admin)
  */
 export async function createProduct(data) {
-  const token = getToken();
-
-  const res = await fetch(`${API_URL}/products`, {
+  const res = await authFetch("/products", {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify(data),
   });
 
@@ -57,14 +46,8 @@ export async function createProduct(data) {
  * Update product
  */
 export async function updateProduct(id, data) {
-  const token = getToken();
-
-  const res = await fetch(`${API_URL}/products/${id}`, {
+  const res = await authFetch(`/products/${id}`, {
     method: "PUT",
-    headers: {
-      "Content-Type": "application/json",
-      Authorization: `Bearer ${token}`,
-    },
     body: JSON.stringify(data),
   });
 
@@ -79,13 +62,8 @@ export async function updateProduct(id, data) {
  * Delete product
  */
 export async function deleteProduct(id) {
-  const token = getToken();
-
-  const res = await fetch(`${API_URL}/products/${id}`, {
+  const res = await authFetch(`/products/${id}`, {
     method: "DELETE",
-    headers: {
-      Authorization: `Bearer ${token}`,
-    },
   });
 
   if (!res.ok) {
