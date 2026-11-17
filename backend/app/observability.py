@@ -80,7 +80,10 @@ def init_request_logging(app):
                 "status": response.status_code,
                 "duration_ms": duration,
                 "xff_hops": _xff_hops(),
-                "trusted_hops": app.config.get("TRUSTED_PROXY_HOPS", 0),
+                "trusted_hops": request.environ.get(
+                    "urstyleke.proxy_hops", app.config.get("TRUSTED_PROXY_HOPS", 0)
+                ),
+                "origin_verified": bool(request.environ.get("urstyleke.origin_verified", False)),
             },
         )
         return response
