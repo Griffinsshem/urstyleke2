@@ -153,7 +153,7 @@ def test_migration_downgrades_and_upgrades_cleanly(app):
 
     migrations = str(Path(__file__).resolve().parent.parent / "migrations")
     with app.app_context():
-        downgrade(directory=migrations, revision="-1")
+        downgrade(directory=migrations, revision="a1f3c9d27b40")  # revision before refresh_tokens
         assert "refresh_tokens" not in inspect(db.engine).get_table_names()
         upgrade(directory=migrations)
         assert "refresh_tokens" in inspect(db.engine).get_table_names()

@@ -3,17 +3,23 @@ from app.extensions import db
 
 class Product(db.Model):
     __tablename__ = "products"
+    __table_args__ = (
+        db.CheckConstraint("price > 0", name="ck_products_price_positive"),
+    )
+
     id = db.Column(db.Integer, primary_key=True)
 
     title = db.Column(db.String(150), nullable=False)
 
     category = db.Column(db.String(50), nullable=False)
 
+    # Whole Kenyan shillings.
     price = db.Column(db.Integer, nullable=False)
 
     image = db.Column(db.String(255), nullable=False)
 
     created_at = db.Column(
-        db.DateTime,
+        db.DateTime(timezone=True),
+        nullable=False,
         server_default=db.func.now()
     )
