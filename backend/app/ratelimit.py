@@ -43,6 +43,11 @@ _strategy = FixedWindowRateLimiter(_storage)
 _FAIL_NS = "login-fail"
 
 
+def _env_or_default(key, default):
+    """An unset or blank variable falls back to the default instead of becoming ''."""
+    return os.environ.get(key, "").strip() or default
+
+
 def _config(key):
     return current_app.config.get(key, DEFAULTS[key])
 
@@ -149,7 +154,7 @@ def init_rate_limiting(app):
     desired = flag not in ("0", "false", "no", "off")
 
     for key, default in DEFAULTS.items():
-        app.config[key] = os.environ.get(key, default)
+        app.config[key] = _env_or_default(key, default)
 
     # Always initialise enabled so the hooks are registered, then apply the real
     # switch; tests can flip limiter.enabled on and off at runtime.
