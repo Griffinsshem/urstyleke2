@@ -1,8 +1,8 @@
 from flask import Flask
 from flask_jwt_extended import JWTManager
-from flask_cors import CORS
 
 from .config import Config
+from .cors import init_cors
 from .extensions import db, migrate
 from .errors import register_error_handlers, register_jwt_error_handlers
 from .observability import configure_logging, init_request_logging
@@ -21,13 +21,9 @@ def create_app():
     configure_logging(app)
     init_request_logging(app)
 
-    CORS(
-        app,
-        resources={r"/api/*": {"origins": ["http://localhost:3000", "https://urstyleke2.vercel.app"]}},
-        allow_headers=["Content-Type", "Authorization"],
-        expose_headers=["Retry-After", "X-Request-ID"],
-        methods=["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"]
-    )
+    # The site reaches the API same-origin through the Next.js proxy, so CORS is
+    # off unless CORS_ORIGINS is set (see app/cors.py).
+    init_cors(app)
 
     db.init_app(app)
     migrate.init_app(app, db)

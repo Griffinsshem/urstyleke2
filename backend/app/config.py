@@ -1,8 +1,9 @@
 """Application configuration.
 
-Every secret comes from environment variables. Nothing here has a default
+Every secret comes from environment variables. No secret has a default
 value, so a missing or weak secret stops the app at startup instead of
-silently running with something guessable.
+silently running with something guessable. Optional settings (cookie flag,
+proxy, rate limits, CORS) have safe defaults and are listed in backend/.env.example.
 """
 
 import os
@@ -78,7 +79,6 @@ class Config:
     # suspend time. Small pool: Render's free instance is a single small process.
     SQLALCHEMY_ENGINE_OPTIONS = {
         "pool_pre_ping": True,
-        "hide_parameters": True,
         "hide_parameters": True,
         "pool_recycle": 280,
         "pool_size": 5,
